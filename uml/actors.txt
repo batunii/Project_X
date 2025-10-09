@@ -1,40 +1,51 @@
 @startuml
 left to right direction
-:Registered User: as r
+:Signed-in User: as r
 :Guest User: as g
 
-rectangle {
-  usecase "Complete tutorial" as UC1
-  usecase "Communicate"
-  usecase "Browse/Join galleries"
-  usecase "Interact with an art piece"
-  usecase "Create an art piece"
-  usecase "Collaborate on an art piece"
-  usecase "Submit an art piece"
-  usecase "Create an art gallery"
-  usecase "Sign off"
-  usecase "Delete account"
-  usecase "Create GenAI art"
-  usecase "Create 3D art"
-  usecase "Customize gallery/workspace"
+rectangle "VR Art Gallery System" {
+  
+  
+  rectangle {
+    usecase "Create an art piece"
+    usecase "Collaborate on an art piece"
+      usecase "Submit an art piece"
+      usecase "Create an art gallery"
+      usecase "Delete account"
+      usecase "Create GenAI art"
+      usecase "Create 3D art"
+      usecase "Customize gallery"
+      usecase "Customize workspace"
+  }
+  rectangle {
+    usecase "Sign up"
+      usecase "Complete tutorial"
+      usecase "Communicate"
+      usecase "Browse/Join galleries"
+      usecase "Interact with an art piece"
+  }
+  
 }
 
-g --> UC1
-g --> (Communicate)
-g --> (Browse/Join galleries)
-g --> (Interact with an art piece)
-
-r --> UC1
 r --> (Create an art piece)
 r --> (Collaborate on an art piece)
-r --> (Submit an art piece)
+r --> (Create an art gallery)
+r --> (Delete account)
+r --> (Customize workspace)
 r --> (Communicate)
 r --> (Browse/Join galleries)
 r --> (Interact with an art piece)
-r --> (Create an art gallery)
-r --> (Sign off)
-r --> (Delete account)
-r --> (Create GenAI art)
-r --> (Create 3D art)
-r --> (Customize gallery/workspace)
+r --> (Complete tutorial)
+g --> (Complete tutorial)
+g --> (Communicate)
+g --> (Browse/Join galleries)
+g --> (Interact with an art piece)
+g --> (Sign up)
+
+
+
+(Create an art piece) <|.. (Create 3D art) : <<extends>>
+(Create an art piece) <|.. (Create GenAI art) : <<extends>>
+(Create an art piece) <|.. (Submit an art piece): <<extends>>
+(Create an art gallery) <|.. (Customize gallery) : <<extends>>
 @enduml
