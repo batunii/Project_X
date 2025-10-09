@@ -1,0 +1,40 @@
+@startuml
+left to right direction
+:Registered User: as r
+:Guest User: as g
+
+rectangle {
+  usecase "Complete tutorial" as UC1
+  usecase "Communicate"
+  usecase "Browse/Join galleries"
+  usecase "Interact with an art piece"
+  usecase "Create an art piece"
+  usecase "Collaborate on an art piece"
+  usecase "Submit an art piece"
+  usecase "Create an art gallery"
+  usecase "Sign off"
+  usecase "Delete account"
+  usecase "Create GenAI art"
+  usecase "Create 3D art"
+  usecase "Customize gallery/workspace"
+}
+
+g --> UC1
+g --> (Communicate)
+g --> (Browse/Join galleries)
+g --> (Interact with an art piece)
+
+r --> UC1
+r --> (Create an art piece)
+r --> (Collaborate on an art piece)
+r --> (Submit an art piece)
+r --> (Communicate)
+r --> (Browse/Join galleries)
+r --> (Interact with an art piece)
+r --> (Create an art gallery)
+r --> (Sign off)
+r --> (Delete account)
+r --> (Create GenAI art)
+r --> (Create 3D art)
+r --> (Customize gallery/workspace)
+@enduml
