@@ -4,7 +4,8 @@ left to right direction
 :Guest User: as g
 
 rectangle "VR Art Gallery System" {
-  
+  usecase "Sign in"
+  usecase "Sign up"
   
   rectangle {
     usecase "Create an art piece"
@@ -18,32 +19,40 @@ rectangle "VR Art Gallery System" {
       usecase "Customize workspace"
   }
   rectangle {
-    usecase "Sign up"
+    
       usecase "Complete tutorial"
       usecase "Communicate"
       usecase "Browse/Join galleries"
       usecase "Interact with an art piece"
   }
   
+  
 }
-
-r --> (Create an art piece)
-r --> (Collaborate on an art piece)
-r --> (Create an art gallery)
-r --> (Delete account)
-r --> (Customize workspace)
-r --> (Communicate)
-r --> (Browse/Join galleries)
-r --> (Interact with an art piece)
-r --> (Complete tutorial)
 g --> (Complete tutorial)
 g --> (Communicate)
 g --> (Browse/Join galleries)
 g --> (Interact with an art piece)
 g --> (Sign up)
+'r --> (Create an art piece)
+'r --> (Collaborate on an art piece)
+'r --> (Create an art gallery)
+'r --> (Delete account)
+'r --> (Customize workspace)
+r --> (Sign in)
+r --> (Communicate)
+r --> (Browse/Join galleries)
+r --> (Interact with an art piece)
+r --> (Complete tutorial)
+'g --> (Sign in)
 
 
 
+(Sign in) <|.. (Collaborate on an art piece) : <<extends>>
+(Sign in) <|.. (Create an art piece) : <<extends>>
+(Sign in) <|.. (Create an art gallery) : <<extends>>
+(Sign in) <|.. (Delete account) : <<extends>>
+(Sign in) <|.. (Customize workspace) : <<extends>>
+(Sign in) <|.. (Sign up) : <<includes>>
 (Create an art piece) <|.. (Create 3D art) : <<extends>>
 (Create an art piece) <|.. (Create GenAI art) : <<extends>>
 (Create an art piece) <|.. (Submit an art piece): <<extends>>
