@@ -17,6 +17,7 @@ rectangle "VR Art Gallery System" {
       usecase "Create 3D art"
       usecase "Customize gallery"
       usecase "Customize workspace"
+      usecase "Review a submission request"
   }
   rectangle {
     
@@ -53,6 +54,7 @@ r --> (Complete tutorial)
 (Sign in) <|.. (Delete account) : <<extends>>
 (Sign in) <|.. (Customize workspace) : <<extends>>
 (Sign in) <|.. (Sign up) : <<includes>>
+(Sign in) <|.. (Review a submission request) : <<extends>>
 (Create an art piece) <|.. (Create 3D art) : <<extends>>
 (Create an art piece) <|.. (Create GenAI art) : <<extends>>
 (Create an art piece) <|.. (Submit an art piece): <<extends>>
