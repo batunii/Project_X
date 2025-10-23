@@ -5,15 +5,15 @@ participant "HUD" as HUD
 participant "Room Manager" as Room
 participant "Auth Manager" as Auth
 
-User -> Input: User clicks on submit on a art piece
-Input -> HUD: Input interacts with HUD
-HUD -> Auth: HUD sends user info to authenticate
-Auth -> HUD: Auth sends auth status to HUD
-HUD -> Room: HUD calls Room Mngr to display galleries
-Room -> HUD: Display of galleries
-HUD -> User: User sees the galleries
-User -> Input: User clicks on gallery he wants to submit to
-Input -> HUD: Input sends gallery info to HUD
-HUD -> Room: HUD submits the art piece to selected gallery
+User -> Input: clicks on submit on a art piece
+Input -> HUD: interacts
+HUD -> Auth: sends user info to authenticate
+Auth -> HUD: sends auth status
+HUD -> Room: calls to display galleries
+Room -> HUD: displays galleries
+HUD -> User: sees the galleries
+User -> Input: clicks on gallery they want to submit to
+Input -> HUD: sends gallery info
+HUD -> Room: submits the art piece to selected gallery
 
 @enduml
