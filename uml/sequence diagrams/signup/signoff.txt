@@ -1,0 +1,11 @@
+@startuml
+actor User
+participant "Controller/Input Manager" as Input
+participant "HUD" as HUD
+participant "Auth Manager" as Auth
+
+User -> Input : User opens HUD
+Input -> HUD : User selects sign off
+HUD -> Auth : triggers the action to log off
+Auth -> : Logs off
+@enduml
