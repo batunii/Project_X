@@ -1,0 +1,17 @@
+@startuml
+actor User
+participant "Controller/Input Manager" as Input
+participant "HUD" as HUD
+participant "Canvas" as Canvas
+participant "Art tools" as Tools
+participant "Auth Manager" as Auth
+User -> Input :  selects canvas
+Input -> Canvas : zooms in
+User -> Input : picks up tool
+Input -> Tools : applies tool
+Tools -> Canvas : updates canvas
+Canvas -> Auth : authenticates change
+User -> Input : clicks exit
+Input -> HUD : exits canvas
+Input -> Canvas : unzooms
+@enduml
