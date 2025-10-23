@@ -1,0 +1,14 @@
+@startuml
+actor User
+participant "Controller/Input Manager" as Input
+participant "HUD" as HUD
+participant "User Manager" as UserMgr
+participant "Auth Manager" as Auth
+participant "Room Manager" as Room
+
+User -> Input : User inputs credentials
+Input -> HUD : Forwards credentials
+HUD -> UserMgr: Creates a user
+UserMgr -> Auth : Registers user
+Auth -> Room : Loads default gallery
+@enduml
