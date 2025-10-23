@@ -1,0 +1,19 @@
+@startuml
+actor User
+participant "Controller/Input Manager" as Input
+participant "HUD" as HUD
+participant "Room Manager" as Room
+participant "Auth Manager" as Auth
+
+User -> Input: User clicks on submit on a art piece
+Input -> HUD: Input interacts with HUD
+HUD -> Auth: HUD sends user info to authenticate
+Auth -> HUD: Auth sends auth status to HUD
+HUD -> Room: HUD calls Room Mngr to display galleries
+Room -> HUD: Display of galleries
+HUD -> User: User sees the galleries
+User -> Input: User clicks on gallery he wants to submit to
+Input -> HUD: Input sends gallery info to HUD
+HUD -> Room: HUD submits the art piece to selected gallery
+
+@enduml
