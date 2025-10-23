@@ -1,0 +1,33 @@
+@startuml
+
+actor UserA
+actor UserB
+
+participant "Controller/Input Manager" as CIM
+participant "HUD Manager" as HUD
+participant "Collaboration/Communication Manager" as CCM
+participant "Network Manager" as NM
+participant "Event Logger" as EL
+
+== Text Chat Flow ==
+UserA -> CIM: Types message input
+CIM -> HUD: Forwards message action
+HUD -> CCM: Sends chat message to CCM
+CCM -> NM: Broadcasts message to relevant users
+NM -> UserB: Delivers message event
+CCM -> EL: Log message event
+NM -> CCM: Delivers message receipt notification
+CCM --> HUD: Notify UserA of message delivery
+
+== Proximity Voice Chat Flow ==
+UserA -> CIM: Speaks via microphone (input detected)
+CIM -> CCM: Forwards voice data
+CCM -> NM: Broadcasts voice to users in proximity (based on spatial data)
+NM -> UserB: Delivers real-time voice data (volume based on distance)
+CCM -> EL: Log voice communication event
+UserA -> HUD: Optionally mutes UserB
+HUD -> CCM: Signal mute action for UserB
+CCM -> NM: Updates session state (mute parameters)
+EL -> EL: Log mute action
+
+@enduml
