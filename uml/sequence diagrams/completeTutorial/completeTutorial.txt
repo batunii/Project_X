@@ -1,0 +1,52 @@
+@startuml
+
+actor User
+participant "Input Manager" as Controller
+participant "Tutorial Manager" as TutorialMgr
+participant "Room Manager" as RoomMgr
+
+User -> Controller: Clicks 'Tutorial' option (HUD)
+activate Controller
+Controller -> TutorialMgr: StartTutorial()
+deactivate Controller
+activate TutorialMgr
+
+TutorialMgr -> User: Guides: "How to walk"
+User -> Controller: Performs walking action
+activate Controller
+Controller -> TutorialMgr: MovementCompleted()
+deactivate Controller
+
+TutorialMgr -> User: Guides: "How to zoom in/out"
+User -> Controller: Performs zoom action
+activate Controller
+Controller -> TutorialMgr: ZoomCompleted()
+deactivate Controller
+
+TutorialMgr -> User: Guides: "Painting features (color, save)"
+User -> Controller: Performs painting action
+activate Controller
+Controller -> TutorialMgr: PaintingCompleted()
+deactivate Controller
+
+TutorialMgr -> User: Guides: "Access and use the HUD"
+User -> Controller: Opens/Explores HUD
+activate Controller
+Controller -> TutorialMgr: HUDExplored()
+deactivate Controller
+
+TutorialMgr -> RoomMgr: TutorialFinished()
+deactivate TutorialMgr
+activate RoomMgr
+
+alt Signed-in User
+    RoomMgr -> RoomMgr: LoadWorkspace()
+    RoomMgr -> User: Places user in Workspace (Postcondition 1)
+else Guest User
+    RoomMgr -> RoomMgr: LoadDefaultGallery()
+    RoomMgr -> User: Places user in Default Gallery (Postcondition 2)
+end
+
+deactivate RoomMgr
+
+@enduml
