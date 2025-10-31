@@ -1,0 +1,110 @@
+@startuml
+title Browse/Join Galleries - Full Flow
+
+' ============== ACTORS & COMPONENTS ==============
+actor "User (Guest or Signed-in)" as User
+participant "HUD" as HUD
+participant "Security Manager" as Sec
+participant "Profile Manager" as Prof
+participant "Network Manager" as Net
+participant "Room Manager" as Room
+participant "Collaboration/Communication" as Collab
+participant "Canvas (Artwork Loader)" as Canvas
+participant "Controller/Input Manager" as Ctrl
+participant "Event Logger" as Log
+
+' ============== TRIGGER ==============
+User ->> HUD: Open "Join a Gallery"
+HUD ->> Sec: Is user authenticated?
+Sec --> HUD: Session status (signed-in / guest)
+Log --> Log: Log: HUD.OpenJoin
+
+' ============== LISTING/DIRECTORY ==============
+alt Signed-in
+  HUD ->> Prof: Fetch user galleries & workspaces
+  Prof --> HUD: Gallery/workspace list
+  HUD ->> Net: Fetch public gallery directory (for browse)
+  Net --> HUD: Public gallery list
+else Guest
+  HUD ->> Net: Fetch public gallery directory
+  Net --> HUD: Public gallery list
+end
+HUD --> User: Show: public list + "Enter Code" (+ personal/workspace if signed-in)
+
+' ============== USER SELECTION BRANCHES ==============
+opt User makes a selection
+  User ->> HUD: Selects option (Public / Personal Workspace / Enter Code)
+  Log --> Log: Log: SelectionMade
+end
+
+' ----- Flow A: Public Gallery -----
+alt Public gallery selected
+  HUD ->> Net: Request join(publicGalleryId)
+  Net ->> Room: Load room state (layout, walls, placements)
+  Room ->> Canvas: Load gallery artworks (by canvas IDs)
+  Canvas --> Net: Asset refs/streams ready
+  Net --> HUD: Gallery session ready (sessionId, instance)
+  HUD ->> Collab: Join presence/voice/text (sessionId)
+  Collab --> User: Presence/chat enabled
+  Log --> Log: Log: JoinedPublicGallery
+
+' ----- Flow B: Personal/Workspace (signed-in only) -----
+else Personal workspace selected
+  HUD ->> Prof: Resolve personal workspaceId
+  Prof --> HUD: workspaceId
+  HUD ->> Net: Request join(workspaceId)
+  Net ->> Room: Load workspace state (user layout, submissions)
+  Room ->> Canvas: Load user artworks
+  Canvas --> Net: Asset refs/streams ready
+  Net --> HUD: Workspace session ready
+  HUD ->> Collab: Join presence/voice/text (sessionId)
+  Collab --> User: Presence/chat enabled
+  Log --> Log: Log: JoinedWorkspace
+
+' ----- Flow C: Private Gallery via Join Code -----
+else Private gallery (join code)
+  User ->> HUD: Enter join code
+  HUD ->> Sec: Validate code (access control)
+  Sec ->> Net: Resolve galleryId from code
+  Net --> Sec: galleryId or error
+  Sec --> HUD: Validation result
+  alt Code valid
+    HUD ->> Net: Request join(galleryId)
+    Net ->> Room: Load room state
+    Room ->> Canvas: Load artworks for private gallery
+    Canvas --> Net: Asset refs/streams ready
+    Net --> HUD: Gallery session ready
+    HUD ->> Collab: Join presence/voice/text
+    Collab --> User: Presence/chat enabled
+    Log --> Log: Log: JoinedPrivateGallery (code)
+  else Code invalid
+    HUD --> User: Error: invalid/expired code
+    Log --> Log: Warn: JoinCodeInvalid
+  end
+end
+
+' ============== ENTERED GALLERY: RUNTIME SYNC ==============
+par Real-time input & movement
+  Ctrl ->> Net: Stream pose & input events (HMD/controllers)
+  Net --> Ctrl: Haptics/ack as needed
+else Multi-user synchronization
+  Net --> Collab: Broadcast positions, chat, events
+  Collab --> User: Remote avatars, chat, proximity voice
+else Asset streaming
+  Net ->> Canvas: Stream/patch artwork & metadata as needed
+  Canvas --> HUD: Display/refresh canvases & thumbnails
+end
+Log --> Log: Log: SessionActive (latency, errors, warnings)
+
+' ============== NOTES (Reqs, Pre/Post) ==============
+' note over Net, Collab
+' Requirements: stable internet • low-latency multi-user sync
+' end note
+' note over Sec
+' Private galleries require valid code/invite (authZ/authN)
+' end note
+' note over Room, Canvas
+' Postcondition: gallery/workspace rendered with artworks
+' end note
+
+@enduml
