@@ -1,0 +1,31 @@
+@startuml
+title Use Case — Create GenAI Art (Simplified)
+
+actor User
+participant "Controller/Input Manager" as Input
+participant "HUD" as HUD
+participant "Art Tools" as Tools
+participant "Canvas" as Canvas
+participant "Network Manager" as Net
+
+User -> Input : Opens HUD and taps "Create GenAI Art"
+Input -> HUD : showPromptKeyboard()
+HUD -> Input : User enters prompt
+Input --> HUD : onPromptEntered(prompt)
+HUD -> Tools : newGenAIRequest(prompt)
+Tools -> Net : genaiGenerate(prompt)
+Net --> Tools : generationReady(GenArt)
+Tools -> Canvas : attachAsset(GenArt)
+Canvas --> Tools : ok
+Tools --> HUD : Art generation complete
+HUD -> User : Displays generated artwork
+
+opt Save and Publish
+    User -> HUD : Taps "Save" then "Upload"
+    HUD -> Canvas : exportCurrentCanvas()
+    Canvas --> HUD : localFile/binary
+    HUD -> Net : uploadAsset(localFile)
+    Net --> HUD : objectUrl
+    HUD -> User : Art published successfully
+end
+@enduml
