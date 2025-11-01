@@ -1,5 +1,5 @@
 @startuml
-title Use Case — Create GenAI Art (Simplified)
+title Use Case — Create GenAI Art
 
 actor User
 participant "Controller/Input Manager" as Input
