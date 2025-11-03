@@ -9,5 +9,5 @@ user -> input : user opens hud
 input -> hud : user selects sign off
 log -> log : logs the sign off activity.
 hud -> auth : triggers the action to log off
-auth -> : logs off
+auth -> user : Sends a message and logs off
 @enduml
