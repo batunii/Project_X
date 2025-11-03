@@ -1,11 +1,10 @@
 @startuml
-
 actor UserA
 actor UserB
 
 participant "Controller/Input Manager" as CIM
-participant "HUD Manager" as HUD
-participant "Collab/Comm Manager" as CCM
+participant "HUD" as HUD
+participant "Collaboration/Communication Manager" as CCM
 participant "Network Manager" as NM
 participant "Event Logger" as EL
 
@@ -18,9 +17,9 @@ CIM -> CCM: Forwards voice data (distance-based volume)
 CCM -> NM: Broadcasts voice to UserB
 
 alt Leaving the chat
-  UserA -> NM: Leaves UserB's range (volume decreases)
-  CCM -> EL: Log proximity/volume event
-  EL -> EL : Log Mute Action
+UserA -> NM: Leaves UserB's range (volume decreases)
+CCM -> EL: Log proximity/volume event
+EL -> EL : Log Mute Action
 end
 
 == Public ChatBox Flow (Text) ==
@@ -41,6 +40,4 @@ UserA -> CIM: Points at UserB, selects chat option
 CIM -> CCM: Initiate private chat
 CCM -> NM: Opens private chat channel
 NM -> UserB: Delivers private chat message
-
-
 @enduml
