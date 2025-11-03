@@ -3,12 +3,15 @@ actor User
 participant "Controller/Input Manager" as Input
 participant "HUD" as HUD
 participant "User Manager" as UserMgr
-participant "Auth Manager" as Auth
+participant "Security Manager" as Auth
 participant "Room Manager" as Room
+participant "Event logger" as log
 
 User -> Input : User inputs credentials
 Input -> HUD : Forwards credentials
 HUD -> UserMgr: Creates a user
+log -> log : Logs the user interaction
 UserMgr -> Auth : Registers user
+log -> log : Logs the system crud operation
 Auth -> Room : Loads default gallery
 @enduml

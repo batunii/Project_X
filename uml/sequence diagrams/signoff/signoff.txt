@@ -2,10 +2,12 @@
 actor user
 participant "controller/input manager" as input
 participant "hud" as hud
-participant "auth manager" as auth
+participant "Security Manager" as auth
+participant "Even Logger" as log
 
 user -> input : user opens hud
 input -> hud : user selects sign off
+log -> log : logs the sign off activity.
 hud -> auth : triggers the action to log off
 auth -> : logs off
 @enduml
