@@ -1,0 +1,69 @@
+@startuml
+actor User
+participant "Controller/Input Manager" as Input
+participant "HUD Manager" as HUD
+participant "Room Manager" as Room
+participant "Canvas/Platform Manager" as Canvas
+participant "Art Tools Manager" as Tools
+participant "Network Manager" as Network
+participant "Event Logger" as Logger
+
+title Create 3D Art
+
+== Basic Flow ==
+
+User -> Input: clicks on a platform on the floor
+Input -> Room: notify platform selection
+Room -> Canvas: request platform initialization
+Canvas -> Room: confirm platform ready
+Room -> HUD: zoom into platform view
+HUD -> User: display empty surface
+
+User -> HUD: chooses default shape (cube/sphere/cylinder/cone)
+HUD -> Canvas: request shape creation
+Canvas -> Tools: initialize default shape with properties
+Tools -> Canvas: return shape object
+Canvas -> Room: place shape at center of platform
+Room -> HUD: render shape on platform
+HUD -> User: display shape on canvas
+
+User -> Input: picks up transformation tool (extrude/scale/translate/rotate)
+Input -> Tools: select transformation tool
+Tools -> HUD: show tool selection feedback
+HUD -> User: tool selected confirmation
+
+User -> Input: applies transformation to shape
+Input -> Tools: send transformation parameters (x, y, z)
+Tools -> Canvas: update shape geometry
+Canvas -> Logger: log transformation operation
+Canvas -> Canvas: auto-save current state (every 16 steps)
+Canvas -> Room: update visual representation
+Room -> HUD: render updated shape
+HUD -> User: display modified shape
+
+User -> Input: picks up clay tool
+Input -> Tools: select clay tool (create/destroy geometry)
+Tools -> HUD: show clay tool selection
+HUD -> User: clay tool active
+
+User -> Input: selects tool color
+Input -> Tools: set tool color property
+Tools -> HUD: update tool color indicator
+HUD -> User: color selection confirmed
+
+User -> Input: applies clay tool to shape
+Input -> Tools: send position/contact data (x, y, z)
+Tools -> Canvas: modify geometry (create/destroy)
+Canvas -> Logger: log clay tool operation
+Canvas -> Canvas: save current state and previous 16 steps
+Canvas -> Room: update shape visualization
+Room -> HUD: render sculpted shape
+HUD -> User: display updated sculpture
+
+User -> Input: clicks 'save' button
+Input -> Canvas: request save operation
+Canvas -> Network: save 3D model in flat form
+Network -> Canvas: confirm save successful
+Canvas -> Logger: log save operation
+Canvas -> HUD: show save confirmation
+HUD -> User: "Artwork saved successfully"
