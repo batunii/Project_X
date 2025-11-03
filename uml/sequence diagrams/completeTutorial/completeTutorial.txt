@@ -1,7 +1,7 @@
 @startuml
 
 actor User
-participant "Input Manager" as Controller
+participant "Controller/Input Manager" as Controller
 participant "Tutorial Manager" as TutorialMgr
 participant "Room Manager" as RoomMgr
 participant "Event Logger" as Logger
