@@ -9,123 +9,47 @@ participant "Network Manager" as Network
 participant "Event Logger" as Logger
 
 title Create 3D Art
-
-== Basic Flow ==
-
 User -> Input: clicks on a platform on the floor
 Input -> Room: notify platform selection
 Room -> Canvas: request platform initialization
 Canvas -> Room: confirm platform ready
+Canvas -> Logger: log("PLATFORM_INITIALIZED", platformId)
 Room -> HUD: zoom into platform view
 HUD -> User: display empty surface
 
+== Choosing a Shape ==
 User -> HUD: chooses default shape (cube/sphere/cylinder/cone)
 HUD -> Canvas: request shape creation
 Canvas -> Tools: initialize default shape with properties
 Tools -> Canvas: return shape object
+Tools -> Logger: log("SHAPE_CREATED", shapeType, shapeId)
 Canvas -> Room: place shape at center of platform
 Room -> HUD: render shape on platform
 HUD -> User: display shape on canvas
 
-User -> Input: picks up transformation tool (extrude/scale/translate/rotate)
-Input -> Tools: select transformation tool
-Tools -> HUD: show tool selection feedback
+== Choosing an Art Tool ==
+User -> Input: picks up an art tool
+Input -> Tools: selects the art tool
+Tools -> HUD: shows tool selection feedback
 HUD -> User: tool selected confirmation
 
-User -> Input: applies transformation to shape
-Input -> Tools: send transformation parameters (x, y, z)
-Tools -> Canvas: update shape geometry
-Canvas -> Logger: log transformation operation
-Canvas -> Canvas: auto-save current state (every 16 steps)
-Canvas -> Room: update visual representation
-Room -> HUD: render updated shape
-HUD -> User: display modified shape
+alt Select Platform from HUD
+    User -> HUD: selects platform from HUD while in workspace
+    HUD -> Room: request platform selection
+    Room -> Canvas: load platform data
+    Canvas -> Network: fetch previously saved 3D art
+    Network -> Canvas: return saved art data
+    Canvas -> Logger: log("ART_RESTORED", platformId, objectCount)
+    Canvas -> Room: restore 3D model on platform
+    Room -> HUD: display saved artwork
+    HUD -> User: show previously saved 3D art on platform surface
+end
 
-User -> Input: picks up clay tool
-Input -> Tools: select clay tool (create/destroy geometry)
-Tools -> HUD: show clay tool selection
-HUD -> User: clay tool active
-
-User -> Input: selects tool color
-Input -> Tools: set tool color property
-Tools -> HUD: update tool color indicator
-HUD -> User: color selection confirmed
-
-User -> Input: applies clay tool to shape
-Input -> Tools: send position/contact data (x, y, z)
-Tools -> Canvas: modify geometry (create/destroy)
-Canvas -> Logger: log clay tool operation
-Canvas -> Canvas: save current state and previous 16 steps
-Canvas -> Room: update shape visualization
-Room -> HUD: render sculpted shape
-HUD -> User: display updated sculpture
-
-User -> Input: clicks 'save' button
-Input -> Canvas: request save operation
-Canvas -> Network: save 3D model in flat form
-Network -> Canvas: confirm save successful
-Canvas -> Logger: log save operation
-Canvas -> HUD: show save confirmation
-HUD -> User: "Artwork saved successfully"
-
-== Alternative Flow 1 - Select Platform from HUD ==
-
-User -> HUD: selects platform from HUD while in workspace
-HUD -> Room: request platform selection
-Room -> Canvas: load platform data
-Canvas -> Network: fetch previously saved 3D art
-Network -> Canvas: return saved art data
-Canvas -> Room: restore 3D model on platform
-Room -> HUD: display saved artwork
-HUD -> User: show previously saved 3D art on platform surface
-
-== Alternative Flow 2 - Change Default Shape ==
-
-User -> HUD: changes default shape selection
-HUD -> Canvas: request shape change
-Canvas -> Tools: replace current shape with new default
-Tools -> Canvas: return new shape object
-Canvas -> Room: update platform with new shape
-Room -> HUD: render new shape
-HUD -> User: display changed shape
-
-== Alternative Flow 3 - Change Tool ==
-
-User -> Input: switches to different tool
-Input -> Tools: deactivate current tool, activate new tool
-Tools -> HUD: update tool selection indicator
-HUD -> User: show new tool active
-
-== Alternative Flow 4 - Change Color ==
-
-User -> Input: selects different color
-Input -> Tools: update tool color property
-Tools -> HUD: update color indicator
-HUD -> User: display new color selection
-
-== Alternative Flow 5 - Undo Operation ==
-
-User -> Input: selects Undo button
-Input -> Canvas: request undo last operation
-Canvas -> Canvas: restore previous state from history
-Canvas -> Logger: log undo action
-Canvas -> Room: revert to previous visual state
-Room -> HUD: render previous canvas state
-HUD -> User: display undone state
-
-== Alternative Flow 6 - Auto-save ==
-
-Canvas -> Canvas: trigger auto-save interval
-Canvas -> Network: save current state automatically
-Network -> Canvas: confirm auto-save
-Canvas -> Logger: log auto-save event
-
-== Alternative Flow 7 - Network Failure During Save ==
-
-Canvas -> Network: attempt to save 3D model
-Network --> Canvas: error / timeout
-Canvas -> HUD: show error notification ("Failed to save artwork")
-Canvas -> Logger: log save error
-HUD -> User: display error message with retry option
-
+alt Change Art Tool
+    User -> Input: switches to different art tool
+    Input -> Tools: deactivate current tool, activate new tool
+    Tools -> Logger: log("TOOL_CHANGED", newTool)
+    Tools -> HUD: update tool selection indicator
+    HUD -> User: show new tool active
+end
 @enduml
