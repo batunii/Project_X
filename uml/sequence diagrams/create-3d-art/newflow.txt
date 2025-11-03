@@ -1,0 +1,47 @@
+@startuml
+actor User
+participant "Controller/Input Manager" as Input
+participant "HUD Manager" as HUD
+participant "Room Manager" as Room
+participant "Canvas/Platform Manager" as Canvas
+participant "Art Tools Manager" as Tools
+participant "Network Manager" as Network
+participant "Event Logger" as Logger
+
+title Create 3D Art
+
+== Basic Flow ==
+
+User -> Input: clicks on a platform on the floor
+Input -> Room: notify platform selection
+Room -> Canvas: request platform initialization
+Canvas -> Room: confirm platform ready
+Room -> HUD: zoom into platform view
+HUD -> User: display empty surface
+
+User -> HUD: chooses default shape (cube/sphere/cylinder/cone)
+HUD -> Canvas: request shape creation
+Canvas -> Tools: initialize default shape with properties
+Tools -> Canvas: return shape object
+Canvas -> Room: place shape at center of platform
+Room -> HUD: render shape on platform
+HUD -> User: display shape on canvas
+
+== Alternative Flow 1 - Select Platform from HUD ==
+
+User -> HUD: selects platform from HUD while in workspace
+HUD -> Room: request platform selection
+Room -> Canvas: load platform data
+Canvas -> Network: fetch previously saved 3D art
+Network -> Canvas: return saved art data
+Canvas -> Room: restore 3D model on platform
+Room -> HUD: display saved artwork
+HUD -> User: show previously saved 3D art on platform surface
+
+== Alternative Flow 2 - Change Art Tool ==
+
+User -> Input: switches to different art tool
+Input -> Tools: deactivate current tool, activate new tool
+Tools -> HUD: update tool selection indicator
+HUD -> User: show new tool active
+@enduml
