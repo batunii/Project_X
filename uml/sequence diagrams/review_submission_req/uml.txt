@@ -6,8 +6,8 @@ participant "HUD" as HUD
 participant "Security Manager" as Sec
 participant "Profile Manager" as Prof
 participant "Network Manager" as Net
-participant "Room Manager (incl. submissions)" as Room
-participant "Canvas (Artwork Loader/Store)" as Canvas
+participant "Room Manager" as Room
+participant "Canvas" as Canvas
 participant "Collaboration/Communication" as Collab
 participant "Event Logger" as Log
 actor "Artist (Submitter)" as Artist
@@ -61,33 +61,5 @@ else User clicks "Reject"
   Collab --> Artist: Notification: Submission rejected + feedback
   HUD --> User: Confirmation: Rejection sent to artist
 end
-
-' ============== POST INTERACTION (COMMON) ==============
-par UI Refresh
-  HUD ->> Room: Refresh pending submissions list
-  Room --> HUD: Updated queue
-else Telemetry
-  Log --> Log: Log: SubmissionReview.Completed
-end
-
-' ============== NOTES ==============
-note over HUD
-Trigger: Notification on gallery page indicates a pending submission.
-User clicks "Review".
-end note
-
-note over Sec
-Precondition: A user (artist) has submitted artwork to this gallery.
-Only signed-in owners can review.
-end note
-
-note over Collab
-Special Requirement: Notification system for requests and feedback.
-end note
-
-note over Room, Canvas
-Postconditions (Accept): Artwork is added to the gallery.
-Postconditions (Reject): Artwork not added; artist receives feedback.
-end note
 
 @enduml
