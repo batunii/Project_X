@@ -9,23 +9,23 @@ participant "Canvas" as Canvas
 participant "Network Manager" as Net
 
 User -> Input : Opens HUD and taps "Create GenAI Art"
-Input -> HUD : showPromptKeyboard()
+Input -> HUD : Prompt keyboard pops up
 HUD -> Input : User enters prompt
-Input --> HUD : onPromptEntered(prompt)
-HUD -> Tools : newGenAIRequest(prompt)
-Tools -> Net : genaiGenerate(prompt)
-Net --> Tools : generationReady(GenArt)
-Tools -> Canvas : attachAsset(GenArt)
-Canvas --> Tools : ok
+Input --> HUD : Prompt processed when "Generate" clicked on
+HUD -> Tools : "Generate" button changes to "Generating" 
+Tools -> Net : GenAI Model receives the prompt and starts generating the art
+Net --> Tools : GenAI is ready
+Tools -> Canvas : GenAI art is attached to the canvas
+Canvas --> Tools : Feedback received about ready image
 Tools --> HUD : Art generation complete
 HUD -> User : Displays generated artwork
 
-opt Save and Publish
+alt Save and Publish
     User -> HUD : Taps "Save" then "Upload"
-    HUD -> Canvas : exportCurrentCanvas()
-    Canvas --> HUD : localFile/binary
-    HUD -> Net : uploadAsset(localFile)
-    Net --> HUD : objectUrl
+    HUD -> Canvas : Exports current canvas image 
+    Canvas --> HUD : Image is converted to an exportable format
+    HUD -> Net : Uploads local file
+    Net --> HUD : Gives object URL
     HUD -> User : Art published successfully
 end
 @enduml

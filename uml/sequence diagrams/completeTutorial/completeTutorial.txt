@@ -1,52 +1,41 @@
 @startuml
 
 actor User
-participant "Input Manager" as Controller
+participant "Controller/Input Manager" as Controller
 participant "Tutorial Manager" as TutorialMgr
 participant "Room Manager" as RoomMgr
+participant "Event Logger" as Logger
 
 User -> Controller: Clicks 'Tutorial' option (HUD)
-activate Controller
-Controller -> TutorialMgr: StartTutorial()
-deactivate Controller
-activate TutorialMgr
+Logger -> Logger: Log: Tutorial clicked
+Controller -> TutorialMgr: Start tutorial
 
 TutorialMgr -> User: Guides: "How to walk"
 User -> Controller: Performs walking action
-activate Controller
-Controller -> TutorialMgr: MovementCompleted()
-deactivate Controller
+Controller -> TutorialMgr: Movement completed
 
 TutorialMgr -> User: Guides: "How to zoom in/out"
 User -> Controller: Performs zoom action
-activate Controller
-Controller -> TutorialMgr: ZoomCompleted()
-deactivate Controller
+Controller -> TutorialMgr: Zoom completed
 
 TutorialMgr -> User: Guides: "Painting features (color, save)"
 User -> Controller: Performs painting action
-activate Controller
-Controller -> TutorialMgr: PaintingCompleted()
-deactivate Controller
+Controller -> TutorialMgr: Painting completed
 
 TutorialMgr -> User: Guides: "Access and use the HUD"
 User -> Controller: Opens/Explores HUD
-activate Controller
-Controller -> TutorialMgr: HUDExplored()
-deactivate Controller
+Logger -> Logger: Log: HUD Opened
+Controller -> TutorialMgr: HUD explored
 
-TutorialMgr -> RoomMgr: TutorialFinished()
-deactivate TutorialMgr
-activate RoomMgr
-
+TutorialMgr -> RoomMgr: Tutorial finished
+Logger -> Logger: Log: Tutorial finished
 alt Signed-in User
-    RoomMgr -> RoomMgr: LoadWorkspace()
+    RoomMgr -> RoomMgr: Load workspace
     RoomMgr -> User: Places user in Workspace (Postcondition 1)
 else Guest User
-    RoomMgr -> RoomMgr: LoadDefaultGallery()
+    RoomMgr -> RoomMgr: Load default gallery
     RoomMgr -> User: Places user in Default Gallery (Postcondition 2)
 end
 
-deactivate RoomMgr
 
 @enduml

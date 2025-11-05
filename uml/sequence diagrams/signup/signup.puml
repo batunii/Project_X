@@ -10,6 +10,8 @@ User -> Input : User inputs credentials
 Input -> HUD : Forwards credentials
 Log -> Log : Logs all the actions
 HUD -> UserMgr: Creates a user
+log -> log : Logs the user interaction
 UserMgr -> Auth : Registers user
+log -> log : Logs the system crud operation
 Auth -> Room : Loads default gallery
 @enduml

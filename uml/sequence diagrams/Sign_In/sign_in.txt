@@ -19,19 +19,18 @@ HUD -> Sec : authenticateUser(credentials)
 
 Sec -> Sec : Validate credentials format
 Sec -> Prof : verifyUserCredentials(credentials)
-Prof --> Sec : User profile data
 
 alt Valid Credentials
     Sec -> Sec : Create session token
     Sec --> HUD : Authentication successful + session token
+		Prof --> HUD : User profile data
     HUD -> Room : loadUserGallery(session token)
     Room --> HUD : User's default gallery data
-    HUD -> User : Display main gallery interface
-    
-    HUD -> Log : event("user_signin_success", {userId, timestamp})
+    HUD -> User : Display main gallery interface 
+    Log -> Log : event("user_signin_success", {userId, timestamp})
 else Invalid Credentials
     Sec --> HUD : Authentication failed
     HUD -> User : Display error message
-    HUD -> Log : event("user_signin_failed", {reason: "invalid_credentials"})
+    Log -> Log : event("user_signin_failed", {reason: "invalid_credentials"})
 end
 @enduml
