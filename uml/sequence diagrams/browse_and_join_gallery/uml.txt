@@ -21,8 +21,8 @@ Log --> Log: Log: HUD.OpenJoin
 
 ' ============== LISTING/DIRECTORY ==============
 alt Signed-in
-  HUD ->> Prof: Fetch user galleries & workspaces
-    Prof --> HUD: Gallery/workspace list
+  HUD ->> Room: Fetch user galleries & workspaces
+    Room --> HUD: Gallery/workspace list
     end
     HUD ->> Net: Fetch public gallery directory
     Net --> HUD: Public gallery list
