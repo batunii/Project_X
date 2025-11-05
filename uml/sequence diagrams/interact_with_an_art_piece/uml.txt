@@ -1,15 +1,13 @@
 @startuml
 actor User
 participant "Controller/Input Manager" as Input
-participant "HUD Manager" as HUD
+participant "HUD" as HUD
 participant "Room Manager" as Room
-participant "Canvas/Platform Manager" as Canvas
+participant "Canvas" as Canvas
 participant "Network Manager" as Network
 participant "Event Logger" as Logger
 
 title Interact with an Art Piece
-
-== Basic Flow ==
 
 User -> Input: walks up to an art piece (threshold reached)
 Input -> Room: notifies proximity event
@@ -31,24 +29,25 @@ Room -> HUD: render visual change or playback multimedia
 HUD -> User: updated art interaction view
 Canvas -> Logger: log user interaction
 
-== Alternative Flow 1 – Selection via Controller ==
+alt Selection via Controller
+    User -> Input: uses controller pointer to select art piece
+    Input -> Room: confirm art piece selection
+    Room -> HUD: highlight and enter interaction mode
+end
 
-User -> Input: uses controller pointer to select art piece
-Input -> Room: confirm art piece selection
-Room -> HUD: highlight and enter interaction mode
+alt Network Failure
+    Canvas -> Network: request art data
+    Network --> Canvas: error / timeout
+    Canvas -> HUD: show error notification ("Unable to load art details")
+    HUD -> Logger: log network error
+end
 
-== Alternative Flow 2 – Network Failure ==
-
-Canvas -> Network: request art data
-Network --> Canvas: error / timeout
-Canvas -> HUD: show error notification ("Unable to load art details")
-HUD -> Logger: log network error
-
-== Alternative Flow 3 – Exit Interaction Mode ==
-User -> Input: exits interaction mode
-Input -> Room: notify exit event
-Room -> HUD: revert to free-move mode
-HUD -> User: normal navigation restored
-Room -> Logger: log exit interaction
+alt Exit Interaction Mode
+    User -> Input: exits interaction mode
+    Input -> Room: notify exit event
+    Room -> HUD: revert to free-move mode
+    HUD -> User: normal navigation restored
+    Room -> Logger: log exit interaction
+end
 
 @enduml
