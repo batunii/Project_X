@@ -2,13 +2,13 @@
 actor User
 participant "Controller/Input Manager" as Input
 participant "HUD" as HUD
-participant "User Manager" as UserMgr
+participant "Profile Manager" as UserMgr
 participant "Security Manager" as Auth
 participant "Room Manager" as Room
-participant "Event logger" as log
-
+participant "Event Logger" as Log
 User -> Input : User inputs credentials
 Input -> HUD : Forwards credentials
+Log -> Log : Logs all the actions
 HUD -> UserMgr: Creates a user
 log -> log : Logs the user interaction
 UserMgr -> Auth : Registers user
