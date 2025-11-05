@@ -1,5 +1,4 @@
-@startuml 
-
+@startuml
 actor "Signed-in User" as User
 participant HUD
 participant "Input Manager" as Controller
@@ -8,45 +7,44 @@ participant "Art Tools" as ArtTools
 
 User -> HUD: Selects 'Customize Workspace' option
 activate HUD
-HUD -> Controller: Request: CustomizeWorkspaceOptions()
+HUD -> Controller: Opens workspace customization menu
 deactivate HUD
 activate Controller
-Controller -> User: Displays customization options
+Controller -> User: Shows customization options
 deactivate Controller
 
 alt Change placement of art pieces
     
     User -> Controller: Selects "Change placement of art pieces"
     activate Controller
-    Controller -> RoomMgr: GalleryEdit(Placement)
+    Controller -> RoomMgr: Enter placement edit mode
     deactivate Controller
     activate RoomMgr
-    RoomMgr -> User: System: Enter "Gallery Edit Mode" 
-    RoomMgr -> User: Grants ability to move art pieces
+    RoomMgr -> User: Enter "Gallery Edit Mode" 
+    RoomMgr -> User: Can now move art pieces around
     deactivate RoomMgr
     
 else Change Art Supplies
     
     User -> Controller: Selects "Change Art Supplies"
     activate Controller
-    Controller -> ArtTools: GalleryEdit(ArtSupplies)
+    Controller -> ArtTools: Enter art supplies edit mode
     deactivate Controller
     activate ArtTools
-    ArtTools -> User: System: Enter "Gallery Edit Mode" 
-    ArtTools -> User: Grants ability to add/delete colors in palette
+    ArtTools -> User: Enter "Gallery Edit Mode" 
+    ArtTools -> User: Can now modify color palette
     deactivate ArtTools
 
 else Change wall color
 
     User -> Controller: Selects "Change wall color" 
     activate Controller
-    Controller -> RoomMgr: GalleryEdit(WallColor)
+    Controller -> RoomMgr: Enter wall color edit mode
     deactivate Controller
     activate RoomMgr
-    RoomMgr -> User: System: Enter "Gallery Edit Mode" 
-    RoomMgr -> User: Grants ability to choose wall color
+    RoomMgr -> User: Enter "Gallery Edit Mode" 
+    RoomMgr -> User: Can now choose wall colors
     deactivate RoomMgr
     
 end
-
 @enduml
