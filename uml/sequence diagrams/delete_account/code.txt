@@ -1,3 +1,4 @@
+@startuml
 actor User
 
 participant "HUD" as HUD
@@ -19,9 +20,9 @@ Profile -> Network : Delete information
 
 alt Account deleted
 Network -> Event : Log deletion action
-Network -> Room : Inform room manager about changes of authorisation
+Network -> Room : Load default gallery
 Room -> HUD : Change room view
-HUD -> Display new room
+HUD -> User: Display new room
 else Account not deleted
 Network -> Event : Log deletion attempt
 Network -> Input : Unsuccessful attempt
@@ -34,4 +35,4 @@ Input -> HUD : Deny request
 HUD -> User : Display "Deletion not allowed"
 end
 
-end
+@enduml
