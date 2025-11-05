@@ -2,7 +2,6 @@
 actor User
 participant "Controller/Input Manager" as Input
 participant "HUD Manager" as HUD
-participant "Room Manager" as Room
 participant "Canvas/Platform Manager" as Canvas
 participant "Art Tools Manager" as Tools
 participant "Network Manager" as Network
@@ -10,11 +9,10 @@ participant "Event Logger" as Logger
 
 title Create 3D Art
 User -> Input: clicks on a platform on the floor
-Input -> Room: notify platform selection
-Room -> Canvas: request platform initialization
-Canvas -> Room: confirm platform ready
+Input -> Canvas: notify platform selection
+Canvas -> HUD: confirm platform ready
 Canvas -> Logger: log("PLATFORM_INITIALIZED", platformId)
-Room -> HUD: zoom into platform view
+Canvas -> HUD: zoom into platform view
 HUD -> User: display empty surface
 
 == Choosing a Shape ==
@@ -23,8 +21,7 @@ HUD -> Canvas: request shape creation
 Canvas -> Tools: initialize default shape with properties
 Tools -> Canvas: return shape object
 Tools -> Logger: log("SHAPE_CREATED", shapeType, shapeId)
-Canvas -> Room: place shape at center of platform
-Room -> HUD: render shape on platform
+Canvas -> HUD: place shape at center of platform
 HUD -> User: display shape on canvas
 
 == Choosing an Art Tool ==
@@ -35,13 +32,10 @@ HUD -> User: tool selected confirmation
 
 alt Select Platform from HUD
     User -> HUD: selects platform from HUD while in workspace
-    HUD -> Room: request platform selection
-    Room -> Canvas: load platform data
+    HUD -> Canvas: request and load platform selection
     Canvas -> Network: fetch previously saved 3D art
     Network -> Canvas: return saved art data
     Canvas -> Logger: log("ART_RESTORED", platformId, objectCount)
-    Canvas -> Room: restore 3D model on platform
-    Room -> HUD: display saved artwork
     HUD -> User: show previously saved 3D art on platform surface
 end
 
