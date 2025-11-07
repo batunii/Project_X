@@ -1,0 +1,66 @@
+@startuml
+!theme mars
+
+title Technical Architecture: VR Art Gallery
+
+package "I. Client Layer" {
+    cloud "VR Headset\n(Meta Horizon OS)" as VR_Headset
+    cloud "PC\n(Windows)" as PC
+
+    rectangle "CLIENT-SIDE APPLICATION" {
+        component "HUD" as HUD
+        component "Gallery Viewer" as GalleryViewer
+        component "Art Interaction" as ArtInteraction
+        component "User Interaction" as UserInteraction
+        component "User Input Manager" as UserInputManager
+    }
+
+    note bottom of "CLIENT-SIDE APPLICATION"
+      VR ENGINE: Unity
+      DEVELOPMENT LANGUAGE: C#
+      VR SDKs: OpenXR, Meta XR, SteamVR
+    end note
+
+    VR_Headset --> HUD
+    PC --> HUD
+    HUD -- GalleryViewer
+    GalleryViewer -- ArtInteraction
+    ArtInteraction -- UserInteraction
+    UserInteraction -- UserInputManager
+}
+
+package "II. Network Layer" {
+    component "PROTOCOLS: TCP/IP, WebSockets (Real-time)\nDATA TRANSFER: REST APIs (Sync),Messaging Queues(Kafka,Redis,RabbitMQ)\n" as Network
+}
+
+package "III. Backend/Server Layer (Cloud)" {
+    cloud "CLOUD PLATFORM:\nAWS, GCP, Azure" as CloudPlatform
+
+ 
+        component "Art Submission Service" as ArtSubmission
+        component "Authentication:\n(Auth0)" as Auth
+        component "Cloud Storage:\n(S3)" as CloudStorage
+        component "Database:\nMongoDB, PostgreSQL" as Database
+        component "Logging" as Logging
+    
+
+    component "Prometheus/Grafana (Metrics)\nELK Stack (Logging)" as Monitoring
+    component "CI/CD:\nGitHub Actions / GitLab CI" as CI_CD
+
+  
+
+    CloudPlatform --> ArtSubmission
+    CloudPlatform --> Auth
+    CloudPlatform --> Logging
+    Logging-->Monitoring
+
+
+
+    ArtSubmission --> CloudStorage
+    Auth --> Database
+    CloudPlatform --> CI_CD
+}
+
+UserInputManager --> Network
+Network --> CloudPlatform
+@enduml
