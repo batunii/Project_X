@@ -1,2 +1,2 @@
 # Project_X
-The virtual Gallary for ASE
+The virtual Gallery for ASE
