@@ -25,7 +25,8 @@ jobs:
                   key: ${{ runner.os }}-unity-library-${{ hashFiles('code/VR Art Gallery/ProjectSettings/ProjectVersion.txt') }}
 
             - name: Run EditMode tests
-              uses: game-ci/unity-test-runner@v2
+              uses: game-ci/unity-test-runner@v4
+              id: edit_tests
               with:
                   unityVersion: auto
                   projectPath: "code/VR Art Gallery"
