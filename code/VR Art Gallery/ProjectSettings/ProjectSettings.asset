@@ -964,11 +964,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: 30ee09ec-376d-436f-9feb-371c8f0808d4
+  cloudProjectId: b40055af-b1ef-4764-a834-4514c762316a
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: VR Art Gallery 2025-11-10_14-51-36
-  organizationId: yash221
+  projectName: VR Art Gallery
+  organizationId: unity_olmnuv51odbtbg
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
