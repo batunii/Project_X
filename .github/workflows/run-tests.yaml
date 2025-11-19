@@ -27,7 +27,7 @@ jobs:
             - name: Run EditMode tests
               uses: game-ci/unity-test-runner@v2
               with:
-                  unityVersion: file
+                  unityVersion: auto
                   projectPath: "code/VR Art Gallery"
                   testMode: editmode
 
@@ -40,7 +40,7 @@ jobs:
             - name: Run PlayMode tests
               uses: game-ci/unity-test-runner@v2
               with:
-                  unityVersion: file
+                  unityVersion: auto
                   projectPath: "code/VR Art Gallery"
                   testMode: playmode
             - name: Upload PlayMode test results
