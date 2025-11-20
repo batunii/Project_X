@@ -24,6 +24,13 @@ jobs:
                   path: code/VR Art Gallery/Library
                   key: ${{ runner.os }}-unity-library-${{ hashFiles('code/VR Art Gallery/ProjectSettings/ProjectVersion.txt') }}
 
+            - name: Check Unity secrets presence
+              env:
+                  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+                  UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+              run: |
+                  if [ -n "$UNITY_LICENSE" ]; then echo "UNITY_LICENSE: set"; else echo "UNITY_LICENSE: not set"; fi
+                  if [ -n "$UNITY_SERIAL" ]; then echo "UNITY_SERIAL: set"; else echo "UNITY_SERIAL: not set"; fi
             - name: Run EditMode tests
               uses: game-ci/unity-test-runner@v4
               id: edit_tests
