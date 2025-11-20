@@ -2,7 +2,7 @@ name: Unity CI - Run Tests on Push
 
 on:
     push:
-        branches: [main, development]
+        branches: [main, development, fix-pipeline]
     pull_request:
         branches: [main]
     workflow_dispatch:
