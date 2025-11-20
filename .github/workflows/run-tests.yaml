@@ -26,7 +26,7 @@ jobs:
 
             - name: Check Unity secrets presence
               env:
-                  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+                  UNITY_LICENSE: ${{ secrets.UNITY_LISCENSE }}
                   UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
               run: |
                   if [ -n "$UNITY_LICENSE" ]; then echo "UNITY_LICENSE: set"; else echo "UNITY_LICENSE: not set"; fi
@@ -35,7 +35,7 @@ jobs:
               uses: game-ci/unity-test-runner@v4
               id: edit_tests
               env:
-                  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+                  UNITY_LICENSE: ${{ secrets.UNITY_LISCENCE }}
                   UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
                   UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
               with:
@@ -50,7 +50,7 @@ jobs:
                   path: code/VR Art Gallery/TestResults/EditModeResults.xml
 
             - name: Run PlayMode tests
-              uses: game-ci/unity-test-runner@v2
+              uses: game-ci/unity-test-runner@v4
               with:
                   unityVersion: auto
                   projectPath: "code/VR Art Gallery"
