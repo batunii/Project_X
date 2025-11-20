@@ -50,7 +50,7 @@ jobs:
                   path: code/VR Art Gallery/TestResults/EditModeResults.xml
 
             - name: Run PlayMode tests
-              uses: game-ci/unity-test-runner@v2
+              uses: game-ci/unity-test-runner@v4
               with:
                   unityVersion: auto
                   projectPath: "code/VR Art Gallery"
