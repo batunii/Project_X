@@ -2265,6 +2265,7 @@ GameObject:
   - component: {fileID: 1117809462}
   - component: {fileID: 1117809461}
   - component: {fileID: 1117809460}
+  - component: {fileID: 1117809463}
   m_Layer: 0
   m_Name: Painting Display
   m_TagString: Untagged
@@ -2281,8 +2282,8 @@ Transform:
   m_GameObject: {fileID: 1117809458}
   serializedVersion: 2
   m_LocalRotation: {x: 0.6517635, y: -0, z: 0.000000029802319, w: 0.7584223}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 3.85, z: -0.11}
+  m_LocalScale: {x: 0.48062605, y: 1, z: 0.41480613}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 821721638}
@@ -2365,6 +2366,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1117809458}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1117809463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1117809458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f65192db0f3e66742aa4139f344029b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  imageUrl: https://b40055af-b1ef-4764-a834-4514c762316a.client-api.unity3dusercontent.com/client_api/v1/environments/5e763078-e928-4102-bf17-44493fa27eb0/buckets/c3fe5c96-b9ee-4103-8f78-d1030d0a03f9/entries/1d7142c0-d590-49d0-baaf-5a24d5f29045/versions/1358a2c3-66e5-419a-bdcb-420920f41aed/content/
+  targetRenderer: {fileID: 1117809461}
 --- !u!1001 &1154457192
 PrefabInstance:
   m_ObjectHideFlags: 0
