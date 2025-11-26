@@ -92,7 +92,7 @@ namespace VRGallery.UI
             // 2. Load authentication scene
             // 3. Trigger authentication UI component
             
-            var authUI = FindObjectOfType<AuthenticationUI>();
+            var authUI = Object.FindFirstObjectByType<AuthenticationUI>();
             if (authUI != null)
             {
                 authUI.ShowAuthenticationUI();
