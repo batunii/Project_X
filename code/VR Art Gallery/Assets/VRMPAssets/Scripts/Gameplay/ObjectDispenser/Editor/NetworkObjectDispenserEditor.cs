@@ -64,7 +64,7 @@ namespace XRMultiplayer
         }
     }
 
-    [CustomPropertyDrawer(typeof(DispenserPanel))]
+    [CustomPropertyDrawer(typeof(NetworkObjectDispenser.DispenserPanel))]
     public class DispenserPanelDrawer : PropertyDrawer
     {
         NetworkObjectDispenser m_target = null;
@@ -154,7 +154,7 @@ namespace XRMultiplayer
         }
     }
 
-    [CustomPropertyDrawer(typeof(DispenserSlot))]
+    [CustomPropertyDrawer(typeof(NetworkObjectDispenser.DispenserSlot))]
     public class DispenserSlotDrawer : PropertyDrawer
     {
         NetworkObjectDispenser m_target = null;

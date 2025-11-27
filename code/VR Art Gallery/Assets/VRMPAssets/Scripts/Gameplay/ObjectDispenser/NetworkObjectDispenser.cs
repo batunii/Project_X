@@ -5,6 +5,8 @@ using UnityEngine;
 using Unity.Netcode;
 using System;
 using UnityEngine.Events;
+using UnityEditor;
+using XRMultiplayer;
 
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
@@ -79,32 +81,41 @@ namespace XRMultiplayer
         }
 
 #if UNITY_EDITOR
-        void OnValidate()
+void OnValidate()
+{
+    // Safety check - don't run if critical references are missing
+    if (m_Panels == null || m_PersistentPanel == null)
+        return;
+    
+    CheckForProxies(false);
+    
+    PrefabStage.prefabStageOpened -= (PrefabStage stage) => CheckForProxies();
+    PrefabStage.prefabStageOpened += (PrefabStage stage) => CheckForProxies();
+    
+    for(int i = 0; i < m_Panels.Length; i++)
+    {
+        if (m_Panels[i] == null || m_Panels[i].dispenserSlots == null) continue;
+        
+        m_Panels[i].panelId = i;
+        for(int j = 0; j < m_Panels[i].dispenserSlots.Length; j++)
         {
-            CheckForProxies(false);
-
-            PrefabStage.prefabStageOpened -= (PrefabStage stage) => CheckForProxies();
-            PrefabStage.prefabStageOpened += (PrefabStage stage) => CheckForProxies();
-
-            for(int i = 0; i < m_Panels.Length; i++)
-            {
-                m_Panels[i].panelId = i;
-                for(int j = 0; j < m_Panels[i].dispenserSlots.Length; j++)
-                {
-                    if(m_Panels[i].dispenserSlots[j] == null) continue;
-                    m_Panels[i].dispenserSlots[j].panelId = i;
-                    m_Panels[i].dispenserSlots[j].slotId = j;
-                }
-            }
-
-            m_PersistentPanel.panelId = k_NonToggleablePanelId;
-            for(int j = 0; j < m_PersistentPanel.dispenserSlots.Length; j++)
-            {
-                if(m_PersistentPanel.dispenserSlots[j] == null) continue;
-                m_PersistentPanel.dispenserSlots[j].panelId = k_NonToggleablePanelId;
-                m_PersistentPanel.dispenserSlots[j].slotId = j;
-            }
+            if(m_Panels[i].dispenserSlots[j] == null) continue;
+            m_Panels[i].dispenserSlots[j].panelId = i;
+            m_Panels[i].dispenserSlots[j].slotId = j;
         }
+    }
+    
+    m_PersistentPanel.panelId = k_NonToggleablePanelId;
+    if (m_PersistentPanel.dispenserSlots != null)
+    {
+        for(int j = 0; j < m_PersistentPanel.dispenserSlots.Length; j++)
+        {
+            if(m_PersistentPanel.dispenserSlots[j] == null) continue;
+            m_PersistentPanel.dispenserSlots[j].panelId = k_NonToggleablePanelId;
+            m_PersistentPanel.dispenserSlots[j].slotId = j;
+        }
+    }
+}
 #endif
 
         IEnumerator ServerSpawnCooldownRoutine()
@@ -439,26 +450,50 @@ namespace XRMultiplayer
 
         public void CheckForProxies(bool clearAllProxies = true)
         {
+            // Add safety check for Editor mode
+            if (m_Panels == null || m_PersistentPanel == null)
+                return;
+
             foreach (var panel in m_Panels)
             {
+                if (panel == null || panel.dispenserSlots == null) continue;
+
                 foreach (var slot in panel.dispenserSlots)
                 {
-                    if (slot.currentInteractable == null && slot.dispenserSlotTransform != null)
+                    if (slot == null || slot.dispenserSlotTransform == null) continue;
+
+                    if (slot.currentInteractable == null)
                     {
-                        if (slot.dispenserSlotTransform.parent.GetComponentInChildren<NetworkBaseInteractable>() != null)
+                        // Add null check for parent
+                        if (slot.dispenserSlotTransform.parent != null)
                         {
-                            slot.currentInteractable = slot.dispenserSlotTransform.parent.GetComponentInChildren<NetworkBaseInteractable>();
+                            var interactable = slot.dispenserSlotTransform.parent.GetComponentInChildren<NetworkBaseInteractable>();
+                            if (interactable != null)
+                            {
+                                slot.currentInteractable = interactable;
+                            }
                         }
                     }
                 }
             }
-            foreach (var slot in m_PersistentPanel.dispenserSlots)
+
+            if (m_PersistentPanel.dispenserSlots != null)
             {
-                if (slot.currentInteractable == null && slot.dispenserSlotTransform != null)
+                foreach (var slot in m_PersistentPanel.dispenserSlots)
                 {
-                    if (slot.dispenserSlotTransform.parent.GetComponentInChildren<NetworkBaseInteractable>() != null)
+                    if (slot == null || slot.dispenserSlotTransform == null) continue;
+
+                    if (slot.currentInteractable == null)
                     {
-                        slot.currentInteractable = slot.dispenserSlotTransform.parent.GetComponentInChildren<NetworkBaseInteractable>();
+                        // Add null check for parent
+                        if (slot.dispenserSlotTransform.parent != null)
+                        {
+                            var interactable = slot.dispenserSlotTransform.parent.GetComponentInChildren<NetworkBaseInteractable>();
+                            if (interactable != null)
+                            {
+                                slot.currentInteractable = interactable;
+                            }
+                        }
                     }
                 }
             }
@@ -468,147 +503,147 @@ namespace XRMultiplayer
 
             OnProxiesUpdated?.Invoke();
         }
-    }
 
-    [Serializable]
-    /// <summary>
-    /// Represents a dispenser panel.
-    /// </summary>
-    public class DispenserPanel
-    {
+        [Serializable]
         /// <summary>
-        /// The type of physics used by this panel.
+        /// Represents a dispenser panel.
         /// </summary>
-        public string panelName;
-
-        /// <summary>
-        /// The panel game object associated with the object dispenser.
-        /// </summary>
-        public GameObject panel;
-
-        /// <summary>
-        /// The array of dispenser slots used by the object dispenser.
-        /// </summary>
-        [SerializeField] public DispenserSlot[] dispenserSlots;
-
-        public int panelId;
-
-        public void SpawnProxyPanel()
+        public class DispenserPanel
         {
-            for (int i = 0; i < dispenserSlots.Length; i++)
+            /// <summary>
+            /// The type of physics used by this panel.
+            /// </summary>
+            public string panelName;
+
+            /// <summary>
+            /// The panel game object associated with the object dispenser.
+            /// </summary>
+            public GameObject panel;
+
+            /// <summary>
+            /// The array of dispenser slots used by the object dispenser.
+            /// </summary>
+            [SerializeField] public DispenserSlot[] dispenserSlots;
+
+            public int panelId;
+
+            public void SpawnProxyPanel()
             {
-                dispenserSlots[i].SpawnProxy();
+                for (int i = 0; i < dispenserSlots.Length; i++)
+                {
+                    dispenserSlots[i].SpawnProxy();
+                }
+            }
+
+            public void ClearProxyPanel()
+            {
+                for (int i = 0; i < dispenserSlots.Length; i++)
+                {
+                    dispenserSlots[i].ClearProxy();
+                }
             }
         }
 
-        public void ClearProxyPanel()
-        {
-            for (int i = 0; i < dispenserSlots.Length; i++)
-            {
-                dispenserSlots[i].ClearProxy();
-            }
-        }
-    }
-
-    [Serializable]
-    /// <summary>
-    /// Represents a dispenser slot.
-    /// </summary>
-    public class DispenserSlot
-    {
+        [Serializable]
         /// <summary>
-        /// The transform of the dispenser slot.
+        /// Represents a dispenser slot.
         /// </summary>
-        public Transform dispenserSlotTransform;
-
-        public NetworkBaseInteractable spawnableInteractablePrefab;
-
-        public NetworkObjectSpawner objectSpawner;
-        public int panelId;
-        public int slotId;
-
-        public bool freezeOnSpawn = true;
-        public float distanceToSpawnNew = .5f;
-        public float spawnCooldown = .5f;
-
-        internal float m_SpawnCooldownTimer = 0f;
-
-
-        [SerializeField] public bool hasSpawnedProxy = false;
-        /// <summary>
-        /// The current network interactable object in the dispenser slot.
-        /// </summary>
-        [SerializeField] public NetworkBaseInteractable currentInteractable;
-        public void ClearProxy()
+        public class DispenserSlot
         {
-            if (currentInteractable == null) return;
-            if (Application.isPlaying)
+            /// <summary>
+            /// The transform of the dispenser slot.
+            /// </summary>
+            public Transform dispenserSlotTransform;
+
+            public NetworkBaseInteractable spawnableInteractablePrefab;
+
+            public NetworkObjectSpawner objectSpawner;
+            public int panelId;
+            public int slotId;
+
+            public bool freezeOnSpawn = true;
+            public float distanceToSpawnNew = .5f;
+            public float spawnCooldown = .5f;
+
+            internal float m_SpawnCooldownTimer = 0f;
+
+
+            [SerializeField] public bool hasSpawnedProxy = false;
+            /// <summary>
+            /// The current network interactable object in the dispenser slot.
+            /// </summary>
+            [SerializeField] public NetworkBaseInteractable currentInteractable;
+            public void ClearProxy()
             {
-                UnityEngine.Object.Destroy(currentInteractable.gameObject);
-            }
-            else
-            {
-                UnityEngine.Object.DestroyImmediate(currentInteractable.gameObject);
-            }
-            hasSpawnedProxy = false;
-        }
-
-        public void SpawnProxy()
-        {
-            if (currentInteractable != null) ClearProxy();
-            NetworkBaseInteractable spawnedInteractable = UnityEngine.Object.Instantiate(spawnableInteractablePrefab, dispenserSlotTransform.position, dispenserSlotTransform.rotation);
-            spawnedInteractable.transform.localScale = dispenserSlotTransform.localScale;
-            spawnedInteractable.transform.parent = dispenserSlotTransform.transform;
-            currentInteractable = spawnedInteractable;
-            hasSpawnedProxy = true;
-        }
-
-        public bool CheckInteractablePosition()
-        {
-            if (currentInteractable == null)
-                return false;
-
-            float currentDistance = Vector3.Distance(currentInteractable.transform.position, dispenserSlotTransform.position);
-            if (objectSpawner != null && currentDistance > 0.001f)
-                objectSpawner.OnSpawnDistanceUpdated.Invoke(Mathf.Clamp01(currentDistance / distanceToSpawnNew));
-
-            return currentDistance > distanceToSpawnNew;
-        }
-
-        public bool CanSpawn(float deltaTime)
-        {
-            if (currentInteractable != null) return false;
-            if (m_SpawnCooldownTimer > 0)
-            {
-                UpdateCooldown(m_SpawnCooldownTimer - deltaTime);
-                return false;
+                if (currentInteractable == null) return;
+                if (Application.isPlaying)
+                {
+                    UnityEngine.Object.Destroy(currentInteractable.gameObject);
+                }
+                else
+                {
+                    UnityEngine.Object.DestroyImmediate(currentInteractable.gameObject);
+                }
+                hasSpawnedProxy = false;
             }
 
-            UpdateCooldown(spawnCooldown);
-            return true;
-        }
+            public void SpawnProxy()
+            {
+                if (currentInteractable != null) ClearProxy();
+                NetworkBaseInteractable spawnedInteractable = UnityEngine.Object.Instantiate(spawnableInteractablePrefab, dispenserSlotTransform.position, dispenserSlotTransform.rotation);
+                spawnedInteractable.transform.localScale = dispenserSlotTransform.localScale;
+                spawnedInteractable.transform.parent = dispenserSlotTransform.transform;
+                currentInteractable = spawnedInteractable;
+                hasSpawnedProxy = true;
+            }
 
-        void UpdateCooldown(float newTime)
-        {
-            m_SpawnCooldownTimer = newTime;
-            if (objectSpawner != null)
-                objectSpawner.OnSpawnCooldownUpdated.Invoke(Mathf.Clamp01(1 - (m_SpawnCooldownTimer / spawnCooldown)));
-        }
+            public bool CheckInteractablePosition()
+            {
+                if (currentInteractable == null)
+                    return false;
 
-        public NetworkBaseInteractable SpawnInteractablePrefab(Transform spawnerTransform)
-        {
-            UpdateCooldown(spawnCooldown);
-            NetworkBaseInteractable spawnedInteractable = UnityEngine.Object.Instantiate
-            (
-                spawnableInteractablePrefab,
-                spawnerTransform.position,
-                spawnerTransform.rotation
-            );
-            spawnedInteractable.transform.localScale = spawnerTransform.localScale;
-            if (objectSpawner != null)
-                objectSpawner.OnObjectSpawned.Invoke();
+                float currentDistance = Vector3.Distance(currentInteractable.transform.position, dispenserSlotTransform.position);
+                if (objectSpawner != null && currentDistance > 0.001f)
+                    objectSpawner.OnSpawnDistanceUpdated.Invoke(Mathf.Clamp01(currentDistance / distanceToSpawnNew));
 
-            return spawnedInteractable;
+                return currentDistance > distanceToSpawnNew;
+            }
+
+            public bool CanSpawn(float deltaTime)
+            {
+                if (currentInteractable != null) return false;
+                if (m_SpawnCooldownTimer > 0)
+                {
+                    UpdateCooldown(m_SpawnCooldownTimer - deltaTime);
+                    return false;
+                }
+
+                UpdateCooldown(spawnCooldown);
+                return true;
+            }
+
+            void UpdateCooldown(float newTime)
+            {
+                m_SpawnCooldownTimer = newTime;
+                if (objectSpawner != null)
+                    objectSpawner.OnSpawnCooldownUpdated.Invoke(Mathf.Clamp01(1 - (m_SpawnCooldownTimer / spawnCooldown)));
+            }
+
+            public NetworkBaseInteractable SpawnInteractablePrefab(Transform spawnerTransform)
+            {
+                UpdateCooldown(spawnCooldown);
+                NetworkBaseInteractable spawnedInteractable = UnityEngine.Object.Instantiate
+                (
+                    spawnableInteractablePrefab,
+                    spawnerTransform.position,
+                    spawnerTransform.rotation
+                );
+                spawnedInteractable.transform.localScale = spawnerTransform.localScale;
+                if (objectSpawner != null)
+                    objectSpawner.OnObjectSpawned.Invoke();
+
+                return spawnedInteractable;
+            }
         }
     }
 }

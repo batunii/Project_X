@@ -6,10 +6,10 @@ using UnityEngine;
 #if UNITY_EDITOR
 
 // Unity 6 Only
-#if HAS_MPPM
-using Unity.Multiplayer.Playmode;
-using UnityEngine.XR.Interaction.Toolkit.UI;
-#endif
+// #if HAS_MPPM
+// using Unity.Multiplayer.Playmode;
+// using UnityEngine.XR.Interaction.Toolkit.UI;
+// #endif
 
 #if HAS_PARRELSYNC
 using ParrelSync;
@@ -50,14 +50,14 @@ namespace XRMultiplayer
 #if UNITY_EDITOR
                 playerId = "Editor";
 
-#if HAS_MPPM
-                //Check for MPPM
-                playerId += CheckMPPM();
+// #if HAS_MPPM
+//                 //Check for MPPM
+//                 playerId += CheckMPPM();
 #elif HAS_PARRELSYNC
                 // Check for ParrelSync
                 playerId += CheckParrelSync();
 #endif
-#endif
+                // #endif
                 // Check for command line args in builds
                 if (!Application.isEditor && m_UseCommandLineArgs)
                 {
@@ -116,24 +116,24 @@ namespace XRMultiplayer
         }
 
 #if UNITY_EDITOR
-#if HAS_MPPM
-        string CheckMPPM()
-        {
-            Utils.Log($"{k_DebugPrepend}MPPM Found");
-            string mppmString = "";
-            if(CurrentPlayer.ReadOnlyTags().Length > 0)
-            {
-                mppmString += CurrentPlayer.ReadOnlyTags()[0];
+// #if HAS_MPPM
+//         string CheckMPPM()
+//         {
+//             Utils.Log($"{k_DebugPrepend}MPPM Found");
+//             string mppmString = "";
+//             if(CurrentPlayer.ReadOnlyTags().Length > 0)
+//             {
+//                 mppmString += CurrentPlayer.ReadOnlyTags()[0];
 
-                // Force input module to disable mouse and touch input to suppress MPPM startup errors.
-                var inputModule = FindFirstObjectByType<XRUIInputModule>();
-                inputModule.enableMouseInput = false;
-                inputModule.enableTouchInput = false;
-            }
+//                 // Force input module to disable mouse and touch input to suppress MPPM startup errors.
+//                 var inputModule = FindFirstObjectByType<XRUIInputModule>();
+//                 inputModule.enableMouseInput = false;
+//                 inputModule.enableTouchInput = false;
+//             }
 
-            return mppmString;
-        }
-#endif
+//             return mppmString;
+//         }
+// #endif
 
 #if HAS_PARRELSYNC
         string CheckParrelSync()
