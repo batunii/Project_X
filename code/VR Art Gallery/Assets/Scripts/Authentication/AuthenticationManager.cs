@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+
 namespace VRGallery.Authentication
 {
     /// <summary>
@@ -97,10 +100,10 @@ namespace VRGallery.Authentication
                 if (response?.User != null)
                 {
                     LogDebug($"User registered successfully: {response.User.Id}");
-                    
+
                     // Set default role as Guest
                     await SetUserRole(response.User.Id, UserRole.Guest);
-                    
+
                     return true;
                 }
                 else
@@ -134,11 +137,11 @@ namespace VRGallery.Authentication
                     CurrentSession = response;
                     OnUserLoggedIn?.Invoke(response.User);
                     LogDebug($"User logged in successfully: {response.User.Id}");
-                    
+
                     // Get and notify of user role
                     var role = await GetUserRole(response.User.Id);
                     OnUserRoleChanged?.Invoke(role);
-                    
+
                     return true;
                 }
                 else
@@ -238,13 +241,13 @@ namespace VRGallery.Authentication
                     .Upsert(profile);
 
                 LogDebug($"Successfully set role {role} for user: {userId}");
-                
+
                 // If this is the current user, notify of role change
                 if (CurrentUser?.Id == userId)
                 {
                     OnUserRoleChanged?.Invoke(role);
                 }
-                
+
                 return true;
             }
             catch (Exception ex)
@@ -286,8 +289,8 @@ namespace VRGallery.Authentication
             if (CurrentUser == null)
                 return "Guest";
 
-            return CurrentUser.UserMetadata?.ContainsKey("full_name") == true 
-                ? CurrentUser.UserMetadata["full_name"].ToString() 
+            return CurrentUser.UserMetadata?.ContainsKey("full_name") == true
+                ? CurrentUser.UserMetadata["full_name"].ToString()
                 : CurrentUser.Email ?? "User";
         }
 
