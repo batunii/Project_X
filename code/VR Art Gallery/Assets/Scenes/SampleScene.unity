@@ -1871,6 +1871,7 @@ GameObject:
   - component: {fileID: 525470202}
   - component: {fileID: 525470201}
   - component: {fileID: 525470200}
+  - component: {fileID: 525470204}
   m_Layer: 0
   m_Name: World Space Canvas
   m_TagString: Untagged
@@ -1988,6 +1989,39 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!114 &525470204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525470198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6298cb68c496e7b42b31868b4e2d1b78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VRGallery.UI.AuthenticationUI
+  loginPanel: {fileID: 0}
+  registerPanel: {fileID: 0}
+  authenticatedPanel: {fileID: 0}
+  loadingPanel: {fileID: 0}
+  loginEmailField: {fileID: 1638370308}
+  loginPasswordField: {fileID: 1557574178}
+  loginButton: {fileID: 651319178}
+  showRegisterButton: {fileID: 1006571513}
+  registerEmailField: {fileID: 0}
+  registerPasswordField: {fileID: 0}
+  confirmPasswordField: {fileID: 0}
+  registerButton: {fileID: 0}
+  showLoginButton: {fileID: 0}
+  welcomeText: {fileID: 0}
+  roleText: {fileID: 0}
+  logoutButton: {fileID: 0}
+  errorPanel: {fileID: 0}
+  errorText: {fileID: 0}
+  closeErrorButton: {fileID: 0}
+  hideUIWhenAuthenticated: 1
+  errorDisplayDuration: 5
 --- !u!1 &557733316
 GameObject:
   m_ObjectHideFlags: 0
