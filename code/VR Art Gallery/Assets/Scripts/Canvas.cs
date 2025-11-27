@@ -22,6 +22,8 @@ public class Canvas : MonoBehaviour
             {
                 Texture2D texture = DownloadHandlerTexture.GetContent(uwr);
                 targetRenderer.material.mainTexture = texture;
+                targetRenderer.material.color = Color.white;
+                targetRenderer.material.SetFloat("_Metallic", 1f);
             }
             else
             {
