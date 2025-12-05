@@ -18,7 +18,7 @@ package "I. Client Layer" {
     note bottom of "CLIENT-SIDE APPLICATION"
       VR ENGINE: Unity
       DEVELOPMENT LANGUAGE: C#
-      VR SDKs: OpenXR, Meta XR, SteamVR
+      VR SDKs: Meta XR
     end note
 
     VR_Headset --> HUD
@@ -38,7 +38,7 @@ package "III. Backend/Server Layer (Cloud)" {
 
  
         component "Art Submission Service" as ArtSubmission
-        component "Authentication:\n(Auth0)" as Auth
+        component "Authentication:\n(Supoerbase)" as Auth
         component "Cloud Storage:\n(Unity CDN)" as CloudStorage
         component "Database:\nPostgreSQL" as Database
         component "Logging" as Logging
