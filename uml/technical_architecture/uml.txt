@@ -30,21 +30,21 @@ package "I. Client Layer" {
 }
 
 package "II. Network Layer" {
-    component "PROTOCOLS: TCP/IP, WebSockets (Real-time)\nDATA TRANSFER: REST APIs (Sync),Messaging Queues(Kafka,Redis,RabbitMQ)\n" as Network
+    component "DATA TRANSFER: Unity Chat Service(REST APIs)\n" as Network
 }
 
 package "III. Backend/Server Layer (Cloud)" {
-    cloud "CLOUD PLATFORM:\nAWS, GCP, Azure" as CloudPlatform
+    cloud "CLOUD PLATFORM:\nUnity Cloud Platform" as CloudPlatform
 
  
         component "Art Submission Service" as ArtSubmission
         component "Authentication:\n(Auth0)" as Auth
-        component "Cloud Storage:\n(S3)" as CloudStorage
-        component "Database:\nMongoDB, PostgreSQL" as Database
+        component "Cloud Storage:\n(Unity CDN)" as CloudStorage
+        component "Database:\nPostgreSQL" as Database
         component "Logging" as Logging
     
 
-    component "Prometheus/Grafana (Metrics)\nELK Stack (Logging)" as Monitoring
+    component "Unity Logging" as Monitoring
     component "CI/CD:\nGitHub Actions / GitLab CI" as CI_CD
 
   
