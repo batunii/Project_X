@@ -38,14 +38,14 @@ package "III. Backend/Server Layer (Cloud)" {
 
  
         component "Art Submission Service" as ArtSubmission
-        component "Authentication:\n(Supoerbase)" as Auth
+        component "Authentication:\n(Supabase)" as Auth
         component "Cloud Storage:\n(Unity CDN)" as CloudStorage
         component "Database:\nPostgreSQL" as Database
         component "Logging" as Logging
     
 
     component "Unity Logging" as Monitoring
-    component "CI/CD:\nGitHub Actions / GitLab CI" as CI_CD
+    component "CI/CD:\nGitHub Actions : Game-CI" as CI_CD
 
   
 
