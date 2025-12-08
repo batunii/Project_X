@@ -42,8 +42,10 @@ jobs:
           lfs: true
       - name: Remove problematic Meta packages for Linux CI
         run: |
-          # Remove packages that have Linux-incompatible native plugins
-          jq 'del(.dependencies."com.meta.xr.sdk.audio") | del(.dependencies."com.meta.xr.sdk.platform") | del(.dependencies."com.meta.xr.mrutilitykit")' \
+          # Remove the all-in-one Meta package and reinstall only core components
+          # This avoids the audio/platform packages that have Linux-incompatible native plugins
+          jq 'del(.dependencies."com.meta.xr.sdk.all") | 
+              .dependencies."com.meta.xr.sdk.core" = "81.0.0"' \
             "code/VR Art Gallery/Packages/manifest.json" > temp.json && mv temp.json "code/VR Art Gallery/Packages/manifest.json"
           echo "Modified manifest.json for CI compatibility"
           cat "code/VR Art Gallery/Packages/manifest.json"
