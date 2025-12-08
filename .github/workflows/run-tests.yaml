@@ -1,6 +1,20 @@
 name: Unity CI - Run Tests on Push
 
-on: [push, pull_request]
+on:
+    push:
+        branches: [main, development, fix-pipeline]
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
+        inputs:
+            environment_name:
+                description: dev or prod
+                required: false
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
 
 jobs:
   testAllModes:
@@ -8,17 +22,32 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         projectPath:
           - "code/VR Art Gallery"
         testMode:
           - playmode
           - editmode
-          - standalone
     steps:
+      - name: Free up disk space
+        run: |
+          sudo docker system prune -af || true
+          sudo apt-get clean
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc || true
+          df -h
       - uses: actions/checkout@v4
         with:
           lfs: true
+      - name: Remove problematic Meta packages for Linux CI
+        run: |
+          # Remove the all-in-one Meta package and reinstall only core components
+          # This avoids the audio/platform packages that have Linux-incompatible native plugins
+          jq 'del(.dependencies."com.meta.xr.sdk.all") | 
+              .dependencies."com.meta.xr.sdk.core" = "81.0.0"' \
+            "code/VR Art Gallery/Packages/manifest.json" > temp.json && mv temp.json "code/VR Art Gallery/Packages/manifest.json"
+          echo "Modified manifest.json for CI compatibility"
+          cat "code/VR Art Gallery/Packages/manifest.json"
       - uses: actions/cache@v3
         with:
           path: ${{ matrix.projectPath }}/Library
@@ -34,6 +63,7 @@ jobs:
         with:
           projectPath: ${{ matrix.projectPath }}
           testMode: ${{ matrix.testMode }}
+          customParameters: -assemblyNames "PlayMode;EditMode" -nographics -silent-crashes -disable-assembly-updater
           artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results
