@@ -54,3 +54,8 @@ Thumbs.db
 *.exe
 *.appx
 *.ipa
+
+# ============ #
+# Custom #
+# ============ #
+/Packages/packages-lock.json
