@@ -173,7 +173,7 @@ namespace VRGallery.UI
             string password = loginPasswordField.text;
 
             bool success = await authManager.LoginUser(email, password);
-            
+
             SetButtonsInteractable(true);
 
             if (!success)
@@ -193,7 +193,7 @@ namespace VRGallery.UI
             string password = registerPasswordField.text;
 
             bool success = await authManager.RegisterUser(email, password);
-            
+
             SetButtonsInteractable(true);
 
             if (success)
@@ -316,7 +316,7 @@ namespace VRGallery.UI
         private void ShowError(string message, bool isError = true)
         {
             if (errorText) errorText.text = message;
-            if (errorPanel) 
+            if (errorPanel)
             {
                 errorPanel.SetActive(true);
                 // Auto-hide after duration
@@ -325,7 +325,7 @@ namespace VRGallery.UI
                     Invoke(nameof(HideError), errorDisplayDuration);
                 }
             }
-            
+
             if (isError)
             {
                 Debug.LogError($"[AuthUI] {message}");
