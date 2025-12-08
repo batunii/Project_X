@@ -40,13 +40,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
-      - name: Remove Meta XR Audio package for CI
+      - name: Remove problematic Meta packages for Linux CI
         run: |
-          # Backup original manifest
-          cp "code/VR Art Gallery/Packages/manifest.json" "code/VR Art Gallery/Packages/manifest.json.backup"
-          # Remove the audio package dependency using jq
-          jq 'del(.dependencies."com.meta.xr.sdk.audio")' "code/VR Art Gallery/Packages/manifest.json" > temp.json && mv temp.json "code/VR Art Gallery/Packages/manifest.json"
-          echo "Modified manifest.json to remove com.meta.xr.sdk.audio"
+          # Remove packages that have Linux-incompatible native plugins
+          jq 'del(.dependencies."com.meta.xr.sdk.audio") | del(.dependencies."com.meta.xr.sdk.platform") | del(.dependencies."com.meta.xr.mrutilitykit")' \
+            "code/VR Art Gallery/Packages/manifest.json" > temp.json && mv temp.json "code/VR Art Gallery/Packages/manifest.json"
+          echo "Modified manifest.json for CI compatibility"
           cat "code/VR Art Gallery/Packages/manifest.json"
       - uses: actions/cache@v3
         with:
@@ -63,7 +62,7 @@ jobs:
         with:
           projectPath: ${{ matrix.projectPath }}
           testMode: ${{ matrix.testMode }}
-          customParameters: -nographics
+          customParameters: -assemblyNames "PlayMode;EditMode" -nographics -silent-crashes -disable-assembly-updater
           artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results
