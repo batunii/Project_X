@@ -1,0 +1,36 @@
+@startuml
+title Sign In
+
+actor User
+participant "Controller/Input Manager" as Input
+participant "HUD Manager" as HUD
+participant "Security Manager" as Sec
+participant "Profile Manager" as Prof
+participant "Room Manager" as Room
+participant "Event Logger" as Log
+
+User -> Input : User opens HUD
+Input -> HUD : Display sign-in interface
+HUD -> User : Show sign-in form
+
+User -> Input : Enters credentials (email/password)
+Input -> HUD : Forward credentials
+HUD -> Sec : authenticateUser(credentials)
+
+Sec -> Sec : Validate credentials format
+Sec -> Prof : verifyUserCredentials(credentials)
+
+alt Valid Credentials
+    Sec -> Sec : Create session token
+    Sec --> HUD : Authentication successful + session token
+		Prof --> HUD : User profile data
+    HUD -> Room : loadUserGallery(session token)
+    Room --> HUD : User's default gallery data
+    HUD -> User : Display main gallery interface 
+    Log -> Log : event("user_signin_success", {userId, timestamp})
+else Invalid Credentials
+    Sec --> HUD : Authentication failed
+    HUD -> User : Display error message
+    Log -> Log : event("user_signin_failed", {reason: "invalid_credentials"})
+end
+@enduml
