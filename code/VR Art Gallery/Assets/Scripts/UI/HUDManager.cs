@@ -1,7 +1,8 @@
 using UnityEngine;
 using TMPro;
 using XRMultiplayer;
-// Remove this: using VRGallery.Authentication;
+using AuthManager = VRGallery.Authentication.AuthenticationManager;
+using VRGallery.Authentication;
 
 namespace VRGallery.UI
 {
@@ -39,7 +40,7 @@ namespace VRGallery.UI
         [SerializeField] private bool showDebugInfo = false;
 
         // Use FULLY QUALIFIED name here
-        private VRGallery.Authentication.AuthenticationManager authManager;
+        private AuthManager authManager;
         private bool isInitialized = false;
 
         #region Unity Lifecycle
@@ -74,7 +75,7 @@ namespace VRGallery.UI
             Debug.Log("[HUDManager] Initializing HUD...");
 
             // Get YOUR AuthenticationManager (not XRMultiplayer's)
-            authManager = VRGallery.Authentication.AuthenticationManager.Instance;
+            authManager = AuthManager.Instance;
             if (authManager == null)
             {
                 Debug.LogWarning("[HUDManager] AuthenticationManager not found. Some features will be disabled.");

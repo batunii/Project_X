@@ -1,21 +1,29 @@
 using UnityEngine;
+using VRGallery.UI;
 
-public class HUD : MonoBehaviour
+namespace VRGallery.UI
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class HUD : MonoBehaviour
     {
-        Debug.Log("[INFO]::HUD has been started!");
-
-        // Ensure HUDManager exists
-        if (HUDManager.Instance == null)
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        void Start()
         {
-            Debug.LogWarning("[HUD] HUDManager not found in scene!");
-        }
-    }
+            Debug.Log("[INFO]::HUD has been started!");
 
-    // Update is called once per frame
-    void Update()
-    {
+            // Ensure HUDManager exists
+            if (HUDManager.Instance == null)
+            {
+                Debug.LogWarning("[HUD] HUDManager not found in scene!");
+            }
+            else
+            {
+                Debug.Log("[HUD] HUDManager found successfully!");
+            }
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+        }
     }
 }
