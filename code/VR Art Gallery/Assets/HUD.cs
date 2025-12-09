@@ -6,6 +6,12 @@ public class HUD : MonoBehaviour
     void Start()
     {
         Debug.Log("[INFO]::HUD has been started!");
+
+        // Ensure HUDManager exists
+        if (HUDManager.Instance == null)
+        {
+            Debug.LogWarning("[HUD] HUDManager not found in scene!");
+        }
     }
 
     // Update is called once per frame
