@@ -7,46 +7,32 @@ package "I. Client Layer" {
     cloud "VR Headset\n(Meta Horizon OS)" as VR_Headset
     cloud "PC\n(Windows)" as PC
 
-    rectangle "Frontend Services" {
+    rectangle "CLIENT-SIDE APPLICATION" {
         component "HUD" as HUD
-        component "Gallery Manager" as GalleryViewer
-        component "Canvas" as ArtInteraction
-        component "Collaboration / Communication Manager" as UserInteraction
-        component "Controller Input Manager" as UserInputManager
+        component "Gallery Viewer" as GalleryViewer
+        component "Art Interaction" as ArtInteraction
+        component "User Interaction" as UserInteraction
+        component "User Input Manager" as UserInputManager
     }
 
-    note top of "Frontend Services"
+    note bottom of "CLIENT-SIDE APPLICATION"
       VR ENGINE: Unity
       DEVELOPMENT LANGUAGE: C#
       VR SDKs: Meta XR
     end note
-    
-    package "Backend Services" {
-        cloud "Backend Layer" as BL
-        component "Art Submission Service" as ArtSubmission
-        component "Authentication:\n(Auth0)" as Auth
-        component "Logging" as Logging
-        
-        BL-->ArtSubmission
-        BL-->Auth
-        BL-->Logging
-    
-    }
-    
+
     VR_Headset --> HUD
     PC --> HUD
     HUD -- GalleryViewer
     GalleryViewer -- ArtInteraction
     ArtInteraction -- UserInteraction
     UserInteraction -- UserInputManager
-    
 }
 
 package "II. Network Layer" {
     component "DATA TRANSFER: Unity Chat Service(REST APIs)\n" as Network
 }
 
-<<<<<<< HEAD
 package "III. Backend/Server Layer (Cloud)" {
     cloud "CLOUD PLATFORM:\nUnity Cloud Platform" as CloudPlatform
 
@@ -60,25 +46,21 @@ package "III. Backend/Server Layer (Cloud)" {
 
     component "Unity Logging" as Monitoring
     component "CI/CD:\nGitHub Actions : Game-CI" as CI_CD
-=======
-package "III. Server Layer (Cloud)" {
-    cloud "CLOUD PLATFORM:\nAWS, Azure" as CloudPlatform
-    component "Cloud Storage:\n(S3)" as CloudStorage
-    component "Database:\nMongoDB, PostgreSQL" as Database
-    component "Prometheus/Grafana (Metrics)\nELK Stack (Logging)" as Monitoring
-    component "CI/CD:\nGitHub Actions / GitLab CI" as CI_CD
->>>>>>> ee042d5f7feb469e793ce457e1c1331fa2ec0f2a
+
+  
+
+    CloudPlatform --> ArtSubmission
+    CloudPlatform --> Auth
+    CloudPlatform --> Logging
+    Logging-->Monitoring
 
 
-    CloudPlatform --> CloudStorage
-    CloudPlatform --> Database
+
+    ArtSubmission --> CloudStorage
+    Auth --> Database
     CloudPlatform --> CI_CD
-    CloudPlatform --> Monitoring
 }
 
-UserInputManager --> BL
-ArtSubmission --> Network
-Auth --> Network
-Logging --> Network
+UserInputManager --> Network
 Network --> CloudPlatform
 @enduml
