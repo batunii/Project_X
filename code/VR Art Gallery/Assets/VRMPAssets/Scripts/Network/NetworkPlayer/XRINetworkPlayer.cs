@@ -185,7 +185,8 @@ namespace XRMultiplayer
         ///<inheritdoc/>
         protected virtual void Update()
         {
-            if (IsOwner && XRINetworkGameManager.Instance.positionalVoiceChat)
+            // ADD NULL CHECK HERE
+            if (IsOwner && m_HeadOrigin != null && XRINetworkGameManager.Instance.positionalVoiceChat)
             {
                 if (Time.time > m_VoicePositionCheckTimer)
                 {
@@ -205,10 +206,14 @@ namespace XRMultiplayer
             m_VoiceAmplitudeCurrent = Mathf.Lerp(m_VoiceAmplitudeCurrent, m_VoiceAmplitudeDestination, Time.deltaTime * k_VoiceAmplitudeSpeed);
         }
 
-        ///<inheritdoc/>
+        //<inheritdoc/>
         protected virtual void LateUpdate()
         {
             if (!IsOwner) return;
+
+            // ADD NULL CHECKS HERE
+            if (m_LeftHandOrigin == null || m_RightHandOrigin == null || m_HeadOrigin == null)
+                return;
 
             // Set transforms to be replicated with ClientNetworkTransforms
             leftHand.SetPositionAndRotation(m_LeftHandOrigin.position, m_LeftHandOrigin.rotation);
@@ -216,7 +221,6 @@ namespace XRMultiplayer
             head.SetPositionAndRotation(m_HeadOrigin.position, m_HeadOrigin.rotation);
         }
 
-        ///<inheritdoc/>
         public override void OnDestroy()
         {
             base.OnDestroy();
