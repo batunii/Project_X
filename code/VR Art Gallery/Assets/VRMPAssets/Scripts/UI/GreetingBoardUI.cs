@@ -10,18 +10,29 @@ public class GreetingBoardUI : MonoBehaviour
 
     private void OnEnable()
     {
+        if (XRINetworkGameManager.Instance == null)
+            return;
+
         XRINetworkGameManager.Connected.Subscribe(ConnectedToGame);
         XRINetworkGameManager.ConnectedRoomName.Subscribe(UpdateRoomName);
+
     }
 
     private void OnDisable()
     {
+        if (XRINetworkGameManager.Instance == null)
+            return;
+
         XRINetworkGameManager.Connected.Unsubscribe(ConnectedToGame);
         XRINetworkGameManager.ConnectedRoomName.Unsubscribe(UpdateRoomName);
+
     }
 
     void ConnectedToGame(bool connected)
     {
+        if (m_RoomNameText == null || m_RoomCodeText == null)
+            return;
+
         if (connected)
         {
             m_RoomNameText.text = XRINetworkGameManager.ConnectedRoomName.Value;
@@ -31,6 +42,9 @@ public class GreetingBoardUI : MonoBehaviour
 
     void UpdateRoomName(string roomName)
     {
+        if (m_RoomCodeText == null)
+            return;
+
         m_RoomNameText.text = roomName;
     }
 }

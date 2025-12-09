@@ -163,7 +163,10 @@ namespace XRMultiplayer
 
             if (connected)
             {
-                Login(XRINetworkGameManager.AuthenicationId, XRINetworkGameManager.Instance.lobbyManager.connectedLobby.Id);
+                if (XRINetworkGameManager.Instance?.lobbyManager?.connectedLobby != null)
+                {
+                    Login(XRINetworkGameManager.AuthenicationId, XRINetworkGameManager.Instance.lobbyManager.connectedLobby.Id);
+                }
             }
             else
             {
@@ -369,9 +372,24 @@ namespace XRMultiplayer
 
         public void Set3DAudio(Transform localPlayerHeadTransform)
         {
-            if (VivoxService.Instance.IsLoggedIn && VivoxService.Instance.ActiveChannels.Count > 0 && VivoxService.Instance.TransmittingChannels[0] == m_CurrentLobbyId)
+            if (localPlayerHeadTransform == null)
+                return;
+
+            if (!VivoxService.Instance.IsLoggedIn)
+                return;
+
+            if (VivoxService.Instance.ActiveChannels.Count == 0)
+                return;
+
+            if (string.IsNullOrEmpty(m_CurrentLobbyId))
+                return;
+
+            // if (VivoxService.Instance.IsLoggedIn && VivoxService.Instance.ActiveChannels.Count > 0 && VivoxService.Instance.TransmittingChannels[0] == m_CurrentLobbyId)
+
+            if (VivoxService.Instance.TransmittingChannels[0] == m_CurrentLobbyId)
             {
-                VivoxService.Instance.Set3DPosition(localPlayerHeadTransform.position,
+                VivoxService.Instance.Set3DPosition(
+                    localPlayerHeadTransform.position,
                     localPlayerHeadTransform.position,
                     localPlayerHeadTransform.forward,
                     localPlayerHeadTransform.up,
@@ -443,7 +461,12 @@ namespace XRMultiplayer
                 m_ConnectedToRoom = true;
                 m_LocalParticpant = participant;
                 m_SelfMuted.Value = false;
-                XRINetworkPlayer.LocalPlayer.SetVoiceId(m_LocalParticpant.PlayerId);
+
+                if (XRINetworkPlayer.LocalPlayer != null)
+                {
+                    XRINetworkPlayer.LocalPlayer.SetVoiceId(m_LocalParticpant.PlayerId);
+                }
+
                 Utils.Log($"{k_DebugPrepend}Joined Voice Channel: {m_CurrentLobbyId}");
                 m_ConnectionStatus.Value = "Joined Voice Channel";
                 PlayerHudNotification.Instance.ShowText("Joined Voice Chat", 3.0f);

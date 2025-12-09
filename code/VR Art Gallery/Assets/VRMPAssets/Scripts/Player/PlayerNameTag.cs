@@ -56,17 +56,29 @@ namespace XRMultiplayer
 
         void LateUpdate()
         {
+            if (m_Camera != null)
+            {
+                m_Camera = Camera.main;
+                if (m_Camera == null)
+                    return;
+            }
+
             UpdateRotation();
             UpdateMinimizedState();
         }
 
         private void OnDestroy()
         {
-            m_Player.onColorUpdated -= UpdateColor;
-            m_Player.onNameUpdated -= UpdateName;
-            m_Player.selfMuted.OnValueChanged -= UpdateSelfMutedState;
-            m_Player.squelched.Unsubscribe(UpdateSquelchedState);
-            m_MuteButton.onClick.RemoveListener(SquelchPressed);
+            if (m_Player != null)
+            {
+                m_Player.onColorUpdated -= UpdateColor;
+                m_Player.onNameUpdated -= UpdateName;
+                m_Player.selfMuted.OnValueChanged -= UpdateSelfMutedState;
+                m_Player.squelched.Unsubscribe(UpdateSquelchedState);
+            }
+
+            if (m_MuteButton != null)
+                m_MuteButton.onClick.RemoveListener(SquelchPressed);
         }
 
         public void SetupNameTag(XRINetworkPlayer player)
@@ -155,15 +167,26 @@ namespace XRMultiplayer
 
         void UpdateColor(Color newColor)
         {
-            m_ColoredImage.color = newColor;
+            if (m_ColoredImage != null)
+            {
+                m_ColoredImage.color = newColor;
+            }
         }
 
         void UpdateName(string newName)
         {
             if (string.IsNullOrEmpty(newName)) return;
 
-            m_NameTagText.text = newName;
-            m_InitialsText.text = newName.Substring(0, 1);
+            if (m_NameTagText != null)
+            {
+                m_NameTagText.text = newName;
+            }
+
+            if (m_InitialsText != null)
+            {
+                m_InitialsText.text = newName.Substring(0, 1);
+            }
+
             UpdateNameTagSize();
         }
 
