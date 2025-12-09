@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 public class SimpleAuthTest : MonoBehaviour
 {
     [Header("Test Settings")]
+
     [SerializeField] private bool runTestOnStart = true;
-    [SerializeField] private string testEmail = "adamczak.jaden@gmail.com";
-    [SerializeField] private string testPassword = "12345678";
+    [SerializeField] private string testEmail = "admin@gmail.com";
+    [SerializeField] private string testPassword = "";
+
 
     private AuthenticationManager authManager;
 
@@ -16,7 +18,7 @@ public class SimpleAuthTest : MonoBehaviour
         if (!runTestOnStart) return;
 
         Debug.Log("[SimpleAuthTest] Starting basic authentication test...");
-        
+
         // Create AuthenticationManager if it doesn't exist
         if (AuthenticationManager.Instance == null)
         {
@@ -24,7 +26,7 @@ public class SimpleAuthTest : MonoBehaviour
             GameObject authManagerGO = new GameObject("AuthenticationManager");
             authManagerGO.AddComponent<VRGallery.Authentication.AuthenticationManager>();
         }
-        
+
         // Wait for AuthenticationManager to be ready
         while (AuthenticationManager.Instance == null)
         {
@@ -32,7 +34,7 @@ public class SimpleAuthTest : MonoBehaviour
         }
 
         authManager = AuthenticationManager.Instance;
-        
+
         // Subscribe to basic auth events
         authManager.OnUserLoggedIn += (user) => Debug.Log($"User logged in: {user.Email}");
         authManager.OnUserLoggedOut += () => Debug.Log("User logged out");
@@ -49,20 +51,20 @@ public class SimpleAuthTest : MonoBehaviour
 
             // Test 1: Check current auth state
             Debug.Log($"Current auth state: {authManager.IsAuthenticated}");
-            
+
             // Test 2: Login
             Debug.Log($"Testing login with: {testEmail}");
             bool loginSuccess = await authManager.LoginUser(testEmail, testPassword);
-            
+
             if (loginSuccess)
             {
                 Debug.Log("Login successful!");
                 Debug.Log($"Current user: {authManager.CurrentUser?.Email}");
-                
+
                 // Test 3: Get user role
                 var role = await authManager.GetCurrentUserRole();
                 Debug.Log($"User role: {role}");
-                
+
                 // Test 4: Test logout
                 Debug.Log("Testing logout...");
                 bool logoutSuccess = await authManager.LogoutUser();
@@ -124,13 +126,13 @@ public class SimpleAuthTest : MonoBehaviour
         {
             authManager = AuthenticationManager.Instance;
         }
-        
+
         if (authManager == null)
         {
             Debug.Log("AuthenticationManager not found - creating one...");
             GameObject authManagerGO = new GameObject("AuthenticationManager");
             authManagerGO.AddComponent<VRGallery.Authentication.AuthenticationManager>();
-            
+
             // Wait a moment for it to initialize
             await Task.Delay(500);
             authManager = AuthenticationManager.Instance;
