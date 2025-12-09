@@ -9,6 +9,12 @@ public class CloudLogger : MonoBehaviour
 {
     private bool isInitialized = false;
 
+    // Make this object persist across scene loads
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     async void Start()
     {
         try
